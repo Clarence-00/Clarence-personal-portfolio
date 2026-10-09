@@ -1,27 +1,27 @@
-import { Cog, Rocket, Timer, Users } from "lucide-react"
+import { Trophy, Utensils, Waves, Users } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
 const roles = [
   {
-    icon: Cog,
-    organization: "Formula SAE",
-    role: "Drivetrain Subteam — Member",
+    icon: Trophy,
+    organization: "Woodland Golf Club",
+    role: "Head Swim & Dive Coach",
     description:
-      "Part of the Drivetrain subteam, contributing to the design and build of the team's competition vehicle.",
+      "sample description",
   },
   {
-    icon: Rocket,
-    organization: "High Power Rocketry Club",
-    role: "Rocket Mechanisms / Avionics Team — Member",
+    icon: Utensils,
+    organization: "Dunkin' Donuts",
+    role: "Crew Memeber",
     description:
-      "Working on the rocket mechanisms and avionics side of the club's high power rocketry projects.",
+      "sample description",
   },
   {
-    icon: Timer,
-    organization: "Worcester Polytechnic Institute",
-    role: "Varsity Track and Field — Athlete",
+    icon: Waves,
+    organization: "JCC Greater Boston",
+    role: "Lifeguard & Swim Instructor",
     description:
-      "Competing at the varsity level while balancing a mechanical engineering course load.",
+      "sample description",
   },
 ]
 
@@ -31,8 +31,7 @@ export function ExperienceSlide() {
       id="experience"
       index={2}
       eyebrow="Experience & Job History"
-      title="Where I've been building"
-      description="My background spans engineering teams and varsity athletics, with leadership running through all of it."
+      title="Work Experience & Leadership"
     >
       <div className="grid gap-4 md:grid-cols-2 md:gap-5">
         {roles.map((item) => (
