@@ -1,17 +1,13 @@
+import Image from "next/image"
+import profilePhoto from "@/public/images/Introduction/profile-photo.jpeg"
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight, Briefcase, Cog, Mail, Trophy } from "lucide-react"
-import { LinkedInIcon } from "@/components/linkedin-icon"
+import { ArrowUpRight, Briefcase, Cog, Mail, Trophy } from "lucide-react"
 import { pages, profile } from "@/lib/profile"
 import { Card, SlideEyebrow } from "./slide"
 
 const background = [
   { label: "School", value: profile.school },
-  { label: "Field", value: "Mechanical Engineering" },
-  { label: "Passions", value: "Building, design, and athletics" },
-  {
-    label: "Strengths",
-    value: "CAD modeling, hands-on fabrication, and leadership",
-  },
+  { label: "Field", value: "Mechanical Engineering (M.S.)" }
 ]
 
 const pageIcons = {
@@ -34,44 +30,30 @@ export function IntroSlide() {
         className="pointer-events-none absolute -right-40 -top-32 size-[28rem] rounded-full bg-blue/40 blur-3xl"
       />
       <div className="relative mx-auto w-full max-w-6xl">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+        <div className="grid items-start gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
           <div>
             <SlideEyebrow index={1} label="Introduction & About Me" />
             <h1
               id="intro-title"
-              className="mt-6 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-ink md:text-7xl"
+              className="mt-4 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-ink md:text-6xl"
             >
               {profile.firstName}
               <br />
               {profile.lastName}
             </h1>
-            <p className="mt-5 inline-flex items-center rounded-full bg-ink px-4 py-1.5 text-sm font-medium text-beige-cream">
-              {profile.headline}
-            </p>
+            
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-grey">
-              {profile.bio}
+              I’m Clarence de Medeiros, a student-athlete at Worcester Polytechnic Institute currently pursuing my Master’s degree in mechanical Engineering. On campus, I’m involved in the Formula SAE team and the High Power Rocketry Club, alongside competing on the Varsity Track & Field team. My academic interests span AI, manufacturing, and CAD design. I'm also exploring software development by learning to code and building interactive web projects like this portfolio. I’m always looking for new projects and opportunities to learn and grow. Explore the site to learn more about who I am and what I’ve worked on!
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/experience"
-                className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-6 text-sm font-medium text-beige-cream transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
-              >
-                Explore my work
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-              <a
-                href={profile.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-11 items-center gap-2 rounded-full border border-ink/15 bg-card px-6 text-sm font-medium text-ink transition-colors hover:bg-blue/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
-              >
-                <LinkedInIcon className="size-4" />
-                LinkedIn
-              </a>
-            </div>
           </div>
 
           <Card className="relative">
+            <Image
+              src={profilePhoto}
+              alt="Profile photo"
+              className="mb-6 w-full rounded-xl object-cover"
+              priority
+            />
             <h2 className="font-display text-xl font-semibold text-ink">
               Background
             </h2>
@@ -93,6 +75,25 @@ export function IntroSlide() {
           </Card>
         </div>
 
+        {/* Resume Section - Constrained to max-w-xl to align left with text above, using view=FitH to fill width */}
+        <section aria-labelledby="resume-title" className="mt-16 max-w-xl">
+          <h2 id="resume-title" className="font-display text-2xl font-semibold text-ink">Resume</h2>
+          <div className="mt-4 flex flex-col gap-4">
+            <a 
+              href="resume.pdf" 
+              download
+              className="inline-flex h-11 w-fit items-center gap-2 rounded-full bg-ink px-6 text-sm font-medium text-beige-cream transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
+            >
+              Download PDF
+            </a>
+            <object 
+              data="resume.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" 
+              type="application/pdf"
+              className="hidden h-[680px] w-full rounded-2xl border-2 border-ink/25 bg-white md:block shadow-sm overflow-hidden" 
+            />
+          </div>
+        </section>
+
         <nav aria-labelledby="explore-title" className="mt-14 md:mt-16">
           <h2
             id="explore-title"
@@ -101,8 +102,8 @@ export function IntroSlide() {
             Explore the site
           </h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {destinations.map((page, i) => {
-              const Icon = pageIcons[page.href]
+            {destinations.map((page) => {
+              const Icon = pageIcons[page.href as keyof typeof pageIcons]
               return (
                 <li key={page.href}>
                   <Link
@@ -115,9 +116,6 @@ export function IntroSlide() {
                         className="flex size-10 items-center justify-center rounded-xl bg-blue/35 text-ink transition-colors group-hover:bg-blue"
                       >
                         <Icon className="size-5" />
-                      </span>
-                      <span className="font-display text-sm text-grey transition-colors group-hover:text-beige-cream/60">
-                        {String(i + 2).padStart(2, "0")}
                       </span>
                     </div>
                     <div className="flex-1">

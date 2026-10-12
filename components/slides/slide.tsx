@@ -53,19 +53,9 @@ export function Slide({
   )
 }
 
-export function SlideEyebrow({
-  index,
-  label,
-}: {
-  index: number
-  label: string
-}) {
+export function SlideEyebrow({ label }: { index?: number; label: string }) {
   return (
-    <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-grey">
-      <span className="font-display text-sm tracking-normal text-blue-strong">
-        {String(index).padStart(2, "0")}
-      </span>
-      <span aria-hidden="true" className="h-px w-8 bg-ink/20" />
+    <p className="text-xs font-medium uppercase tracking-[0.2em] text-grey">
       {label}
     </p>
   )
