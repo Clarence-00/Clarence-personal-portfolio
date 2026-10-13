@@ -1,0 +1,9 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/contact/page": "/contact",
+  "/experience/page": "/experience",
+  "/interests/page": "/interests",
+  "/page": "/",
+  "/technical/page": "/technical"
+}
