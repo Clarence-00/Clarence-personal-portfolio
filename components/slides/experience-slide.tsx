@@ -124,12 +124,12 @@ export function ExperienceSlide() {
               {item.items.map((subItem, index) => (
                 <div
                   key={index}
-                  className="grid items-center gap-8 md:grid-cols-2"
+                  className={subItem.image ? "grid items-center gap-8 md:grid-cols-2" : ""}
                 >
                   <p className="text-grey leading-relaxed">
                     {subItem.description}
                   </p>
-                  {subItem.image ? (
+                  {subItem.image && (
                     <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm">
                       <Image
                         src={subItem.image}
@@ -137,10 +137,6 @@ export function ExperienceSlide() {
                         fill
                         className="object-cover"
                       />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey">
-                      Image placeholder
                     </div>
                   )}
                 </div>

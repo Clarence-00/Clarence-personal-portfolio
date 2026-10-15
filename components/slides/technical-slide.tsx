@@ -20,57 +20,49 @@ const teams = [
 
 const hprcProjects = [
   {
-    title: "Gimbal Mechanism Integration",
-    description: "Design and assembly of the experimental GNC hardware gimbal system.",
+    title: "Gimbal Mechanism Design",
+    description:
+      "CAD model of the experimental GNC gimbal: the flight computer sits in a housing on a two-axis pivot, driven by two stepper motors on side brackets through color-coded linkage arms, all on a mounting plate.",
     image: gimballphoto,
   },
   {
-    title: "Sensor Setup & Calibration",
-    description: "Configuring and testing electronic telemetry components.",
+    title: "Exploded Assembly View",
+    description:
+      "Exploded view of the gimbal showing how it goes together: the stepper motors, side brackets, linkage arms, electronics housing, flight computer board, and the fasteners that hold it all in place.",
     image: gimballphoto1,
   },
   {
-    title: "Hardware Assembly & Testing",
-    description: "Rigorous bench testing and integration before field deployment.",
+    title: "Integration into the Rocket Airframe",
+    description:
+      "The gimbal assembly positioned above its mounting plate and a section of the rocket airframe, checking fit and alignment before integrating the hardware into the vehicle.",
     image: gimballphoto2,
-  },
-  {
-    title: "Placeholder Item 4",
-    description: "Text placeholder 4: work done, progress, updates.",
-    image: null,
-  },
-  {
-    title: "Placeholder Item 5",
-    description: "Text placeholder 5: work done, progress, updates.",
-    image: null,
   },
 ]
 
 const fsaeProjects = [
   {
-    title: "Exhaust Routing & Design",
-    description: "Designing custom exhaust components for optimal vehicle performance.",
+    title: "Exhaust Routing in the Chassis",
+    description:
+      "Full-vehicle CAD showing the exhaust header looping off the engine and running back to the muffler through the tube-frame chassis, with clearance checked against the frame and surrounding components.",
     image: exhaustphoto,
   },
   {
-    title: "Fabrication & Welding",
-    description: "Precision manufacturing and assembly of exhaust tubing.",
+    title: "Header, Muffler & Sensor Assembly",
+    description:
+      "The complete exhaust assembly on its own: the curved header pipe, muffler, and an exhaust sensor mounted on the header with its wiring routed away from the pipe.",
     image: exhaustphoto1,
   },
   {
-    title: "Mounting & Brackets",
-    description: "Engineering secure structural brackets to handle high vibration.",
+    title: "Sensor Mounting Detail",
+    description:
+      "Close-up of the threaded sensor port on the header pipe, positioned and angled so the sensor reads the exhaust flow while staying accessible for installation and service.",
     image: exhaustphoto2,
   },
   {
-    title: "System Testing & Validation",
-    description: "Final fitment checks and performance tuning.",
+    title: "3D Scan of the Exhaust Header",
+    description:
+      "3D scan of the existing exhaust header and flange, used as a reference to capture the real geometry for redesigning and fitting new exhaust components.",
     image: exhaustphoto3,
-  },
-  {
-    title: "Placeholder Item 5",
-    description: "Text placeholder 5: work done, progress, updates.",
-    image: null,
   },
 ]
 
