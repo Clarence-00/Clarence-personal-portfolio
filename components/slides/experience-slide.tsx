@@ -1,5 +1,6 @@
 import Image from "next/image"
 import woodlandImage from "@/public/images/Experience/woodland-photo1.jpeg"
+import woodlandAwardImage from "@/public/images/Experience/woodland-award.jpg"
 import { Trophy, Utensils, Waves, HeartHandshake } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
@@ -17,9 +18,9 @@ const roles = [
         alt: "Woodland Golf Club coaching experience",
       },
       {
-        description: "Description placeholder: responsibilities, highlights, dates.",
-        image: null,
-        alt: "Woodland Golf Club additional photo",
+        description: "I was honored to receive the Price Meropol McMahon Award from the Woodland Golf Club Scholarship Foundation. The award was presented to me at the foundation's ceremony at the club in recognition of my commitment and contributions to the Woodland community.",
+        image: woodlandAwardImage,
+        alt: "Clarence receiving the Price Meropol McMahon Award at the Woodland Golf Club Scholarship Foundation ceremony",
       },
     ],
   },

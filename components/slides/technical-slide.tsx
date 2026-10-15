@@ -11,6 +11,8 @@ import exhaustphoto1 from "@/public/images/Technical/exhaust-photo1.png"
 import exhaustphoto2 from "@/public/images/Technical/exhaust-photo2.png"
 import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 
+import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
+
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
   { id: "fsae", name: "Formula SAE", detail: "Drivetrain subteam & Exhaust Lead" },
@@ -72,11 +74,19 @@ const fsaeProjects = [
   },
 ]
 
-const printingProjects = Array.from({ length: 4 }).map((_, i) => ({
-  title: `3D Printing Workflow ${i + 1}`,
-  description: `Text placeholder ${i + 1}: work done, progress, updates.`,
-  image: null,
-}))
+const printingProjects = [
+  {
+    title: "Custom Phone Stand",
+    description:
+      "I designed this phone stand myself in CAD, sizing the cradle and lip around my phone in its case and shaping the curved back support to hold it at a comfortable viewing angle. I then sliced the model, tuned the print settings, and 3D printed it, testing the fit and stability before calling it finished.",
+    image: phoneStandPhoto,
+  },
+  ...Array.from({ length: 3 }).map((_, i) => ({
+    title: `3D Printing Workflow ${i + 2}`,
+    description: `Text placeholder ${i + 2}: work done, progress, updates.`,
+    image: null,
+  })),
+]
 
 export function TechnicalSlide() {
   return (
@@ -192,9 +202,15 @@ export function TechnicalSlide() {
           <div className="mt-8 flex flex-col gap-10">
             {printingProjects.map((project, i) => (
               <div key={i} className="grid items-center gap-6 md:grid-cols-2">
-                <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
-                  Image placeholder {i + 1}
-                </div>
+                {project.image ? (
+                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
+                    <Image src={project.image} alt={project.title} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
+                    Image placeholder {i + 1}
+                  </div>
+                )}
                 <div>
                   <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
                   <p className="mt-2 text-grey">{project.description}</p>
