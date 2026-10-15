@@ -12,6 +12,8 @@ import exhaustphoto2 from "@/public/images/Technical/exhaust-photo2.png"
 import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 
 import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
+import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
+import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
 
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
@@ -40,6 +42,12 @@ const hprcProjects = [
 ]
 
 const fsaeProjects = [
+  {
+    title: "WPI Formula SAE Team",
+    description:
+      "Our Formula SAE team at WPI's Society of Automotive Engineers shop, where we design, fabricate, and assemble the car. I'm on the drivetrain subteam as Exhaust Lead.",
+    image: fsaeTeamPhoto,
+  },
   {
     title: "Exhaust Routing in the Chassis",
     description:
@@ -72,6 +80,12 @@ const printingProjects = [
     description:
       "I designed this phone stand myself in CAD, sizing the cradle and lip around my phone in its case and shaping the curved back support to hold it at a comfortable viewing angle. I then sliced the model, tuned the print settings, and 3D printed it, testing the fit and stability before calling it finished.",
     image: phoneStandPhoto,
+  },
+  {
+    title: "3D Printed QR Code",
+    description:
+      "I 3D printed a QR code that links to this portfolio site, with the code raised off a framed base so it scans reliably. It's a small, durable card I can carry around and hand to people so they can pull up my work on their phone.",
+    image: qrCodePhoto,
   },
 ]
 
@@ -126,7 +140,7 @@ export function TechnicalSlide() {
                   3D Printing Workflows
                 </h3>
                 <p className="mt-1 text-sm text-grey">
-                  Slicing, calibration, and structural functional parts
+                  Things I've designed and 3D printed
                 </p>
               </div>
             </div>
