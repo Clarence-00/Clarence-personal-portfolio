@@ -1,5 +1,5 @@
 import Image from "next/image"
-import woodlandImage from "@/public/images/Experience/woodland-photo1.jpeg"
+import woodlandImage from "@/public/images/Experience/woodland-team.jpg"
 import woodlandAwardImage from "@/public/images/Experience/woodland-award.jpg"
 import { Trophy, Utensils, Waves, HeartHandshake } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
@@ -13,9 +13,9 @@ const roles = [
     description: "Led swim and dive training programs, managed team schedules, and coached athletes to improve technique and competitive performance.",
     items: [
       {
-        description: "Led swim and dive training programs, managed team schedules, and coached athletes to improve technique and competitive performance.",
+        description: "As Head Diving Coach at Woodland Golf Club, I built and ran daily training plans for more than 20 divers, created personalized dive sheets for each athlete, and coached them on technique and competition readiness. Under my leadership, the Woodland diving team took 1st place in the diving division.",
         image: woodlandImage,
-        alt: "Woodland Golf Club coaching experience",
+        alt: "Woodland Golf Club swim and dive team at the pool",
       },
       {
         description: "I was honored to receive the Price Meropol McMahon Award from the Woodland Golf Club Scholarship Foundation. The award was presented to me at the foundation's ceremony at the club in recognition of my commitment and contributions to the Woodland community.",
