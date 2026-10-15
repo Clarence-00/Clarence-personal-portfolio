@@ -9,7 +9,7 @@ export function InterestsSlide() {
       id="interests"
       index={4}
       eyebrow="Interests & Activities"
-      title="Interest"
+      title="Interests"
     >
       <div className="grid gap-4 md:grid-cols-2 md:gap-5">
         <Card className="flex flex-col gap-6">

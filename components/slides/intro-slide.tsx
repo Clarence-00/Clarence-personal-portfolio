@@ -7,7 +7,7 @@ import { Card, SlideEyebrow } from "./slide"
 
 const background = [
   { label: "School", value: profile.school },
-  { label: "Field", value: "Mechanical Engineering (M.S.)" }
+  { label: "Field", value: "Mechanical Engineering (B.S.), Class of 2029" }
 ]
 
 const pageIcons = {
@@ -43,7 +43,7 @@ export function IntroSlide() {
             </h1>
             
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-grey">
-              I’m Clarence de Medeiros, a student-athlete at Worcester Polytechnic Institute currently pursuing my Master’s degree in mechanical Engineering. On campus, I’m involved in the Formula SAE team and the High Power Rocketry Club, alongside competing on the Varsity Track & Field team. My academic interests span AI, manufacturing, and CAD design. I'm also exploring software development by learning to code and building interactive web projects like this portfolio. I’m always looking for new projects and opportunities to learn and grow. Explore the site to learn more about who I am and what I’ve worked on!
+              {profile.bio}
             </p>
           </div>
 

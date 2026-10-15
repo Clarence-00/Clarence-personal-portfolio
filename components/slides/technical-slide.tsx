@@ -73,11 +73,6 @@ const printingProjects = [
       "I designed this phone stand myself in CAD, sizing the cradle and lip around my phone in its case and shaping the curved back support to hold it at a comfortable viewing angle. I then sliced the model, tuned the print settings, and 3D printed it, testing the fit and stability before calling it finished.",
     image: phoneStandPhoto,
   },
-  ...Array.from({ length: 3 }).map((_, i) => ({
-    title: `3D Printing Workflow ${i + 2}`,
-    description: `Text placeholder ${i + 2}: work done, progress, updates.`,
-    image: null,
-  })),
 ]
 
 export function TechnicalSlide() {
