@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Layers, Wrench } from "lucide-react"
+import { Layers, Sparkles, Wrench } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
 import gimballphoto from "@/public/images/Technical/gimball-photo.png"
@@ -14,6 +14,8 @@ import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
 import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
 import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
+import fsaeAiSensorPort from "@/public/images/Technical/fsae-ai-sensor-port.png"
+import fsaeAiExhaustAssembly from "@/public/images/Technical/fsae-ai-exhaust-assembly.png"
 
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
@@ -74,6 +76,21 @@ const fsaeProjects = [
   },
 ]
 
+const fsaeAiProjects = [
+  {
+    title: "O2 Sensor Port Design with AI",
+    description:
+      "I use AI as a design partner alongside SolidWorks to work through the exhaust's O2 sensor mount. AI helped me research sensor requirements, check the placement and angle of the threaded weld bung on the header so the sensor reads the exhaust flow, and plan the modeling steps, which I then built and refined in SolidWorks.",
+    image: fsaeAiSensorPort,
+  },
+  {
+    title: "AI-Assisted Exhaust Assembly",
+    description:
+      "For the full header, muffler, and sensor assembly, I paired SolidWorks with AI to plan the routing, size the pipe and muffler sections, and organize the part and assembly structure. Using AI to talk through design options and catch issues early let me iterate on the layout faster before committing to fabrication.",
+    image: fsaeAiExhaustAssembly,
+  },
+]
+
 const printingProjects = [
   {
     title: "Custom Phone Stand",
@@ -93,7 +110,7 @@ export function TechnicalSlide() {
   return (
     <Slide
       id="technical"
-      index={3}
+      index={2}
       eyebrow="Technical experience"
       title="Projects & Engineering"
     >
@@ -125,27 +142,57 @@ export function TechnicalSlide() {
           </div>
         </Card>
 
-        {/* Right Card: Interactive 3D Printing Workflows Button */}
-        <a
-          href="#3d-printing"
-          className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
-        >
-          <Card className="flex h-full flex-col justify-between transition-colors hover:border-ink hover:bg-beige/60">
+        <div className="flex flex-col gap-4 md:gap-5">
+          {/* Right Card: Interactive 3D Printing Workflows Button */}
+          <a
+            href="#3d-printing"
+            className="group block rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
+          >
+            <Card className="flex h-full flex-col justify-between transition-colors hover:border-ink hover:bg-beige/60">
+              <div className="flex items-start gap-4">
+                <IconBadge>
+                  <Layers className="size-5" />
+                </IconBadge>
+                <div className="flex-1">
+                  <h3 className="font-display text-lg font-semibold text-ink">
+                    3D Printing Workflows
+                  </h3>
+                  <p className="mt-1 text-sm text-grey">
+                    Things I've designed and 3D printed
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </a>
+
+          {/* AI Integration Card */}
+          <Card className="flex flex-1 flex-col">
             <div className="flex items-start gap-4">
               <IconBadge>
-                <Layers className="size-5" />
+                <Sparkles className="size-5" />
               </IconBadge>
               <div className="flex-1">
                 <h3 className="font-display text-lg font-semibold text-ink">
-                  3D Printing Workflows
+                  AI Integration
                 </h3>
                 <p className="mt-1 text-sm text-grey">
-                  Things I've designed and 3D printed
+                  How I use AI alongside CAD to research, plan, and iterate on my engineering projects faster
                 </p>
+                <ul className="mt-3 flex flex-col gap-3">
+                  <li>
+                    <a
+                      href="#fsae-ai"
+                      className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
+                    >
+                      <p className="font-medium text-ink">Formula SAE AI Integration</p>
+                      <p className="mt-1 text-sm text-grey">Designing exhaust parts with AI and SolidWorks</p>
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
           </Card>
-        </a>
+        </div>
       </div>
 
       <div className="mt-16 flex flex-col gap-20">
@@ -194,6 +241,24 @@ export function TechnicalSlide() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Formula SAE AI Integration */}
+          <div id="fsae-ai" className="mt-16 scroll-mt-32">
+            <h3 className="font-display text-2xl font-semibold text-ink">Formula SAE AI Integration</h3>
+            <div className="mt-8 flex flex-col gap-10">
+              {fsaeAiProjects.map((project, i) => (
+                <div key={i} className="grid items-center gap-6 md:grid-cols-2">
+                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-white shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
+                    <Image src={project.image} alt={project.title} fill className="object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
+                    <p className="mt-2 text-grey">{project.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

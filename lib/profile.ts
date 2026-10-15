@@ -19,16 +19,16 @@ export const pages = [
     summary: "Who I am and my background.",
   },
   {
-    href: "/experience",
-    label: "Experience",
-    title: "Experience & Job History",
-    summary: "Employment history and professional background",
-  },
-  {
     href: "/technical",
     label: "Technical",
     title: "Projects & Engineering",
     summary: "Engineering projects and technical skills",
+  },
+  {
+    href: "/experience",
+    label: "Experience",
+    title: "Experience & Job History",
+    summary: "Employment history and professional background",
   },
   {
     href: "/interests",

@@ -72,7 +72,7 @@ export function ExperienceSlide() {
   return (
     <Slide
       id="experience"
-      index={2}
+      index={3}
       eyebrow="Experience & Job History"
       title="Work Experience & leadership"
     >
