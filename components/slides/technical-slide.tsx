@@ -84,7 +84,7 @@ const printingProjects = [
   {
     title: "3D Printed QR Code",
     description:
-      "I 3D printed a QR code that links to this portfolio site, with the code raised off a framed base so it scans reliably. It's a small, durable card I can carry around and hand to people so they can pull up my work on their phone.",
+      "I designed a QR code that links to this portfolio site in SolidWorks and 3D printed it in two colors, with black code on a white base so it scans reliably. I made a framed version and a slimmer card version, so I can carry one around and let people pull up my work on their phone.",
     image: qrCodePhoto,
   },
 ]
