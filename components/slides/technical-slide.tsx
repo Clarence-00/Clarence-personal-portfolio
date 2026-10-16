@@ -16,6 +16,7 @@ import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
 import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
 import fsaeAiSensorPort from "@/public/images/Technical/fsae-ai-sensor-port.png"
 import fsaeAiExhaustAssembly from "@/public/images/Technical/fsae-ai-exhaust-assembly.png"
+import hprcAiTurntable from "@/public/images/Technical/hprc-ai-turntable.png"
 
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
@@ -88,6 +89,15 @@ const fsaeAiProjects = [
     description:
       "For the full header, muffler, and sensor assembly, I paired SolidWorks with AI to plan the routing, size the pipe and muffler sections, and organize the part and assembly structure. Using AI to talk through design options and catch issues early let me iterate on the layout faster before committing to fabrication.",
     image: fsaeAiExhaustAssembly,
+  },
+]
+
+const hprcAiProjects = [
+  {
+    title: "Sample Turntable Designed with Claude",
+    description:
+      "To learn how AI can speed up mechanism design for the rocketry club, I worked with Claude to design a sample servo-driven turntable in SolidWorks. I described what I wanted, and Claude helped lay out the parts: a cylindrical base with a pocket sized to hold a standard servo, mounting posts for the servo tabs, a side slot to route the servo wire out, and a flat platter with a center hole that seats on the servo horn. The exploded view shows how the base, servo, and platter stack together. This small test showed me how AI can turn a design idea into a working CAD model quickly, which I can apply to rotating mechanisms like the airbrakes and gimbal.",
+    image: hprcAiTurntable,
   },
 ]
 
@@ -181,6 +191,15 @@ export function TechnicalSlide() {
                 <ul className="mt-3 flex flex-col gap-3">
                   <li>
                     <a
+                      href="#hprc-ai"
+                      className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
+                    >
+                      <p className="font-medium text-ink">High Power Rocketry Club AI Integration</p>
+                      <p className="mt-1 text-sm text-grey">Designing a sample servo turntable with Claude and SolidWorks</p>
+                    </a>
+                  </li>
+                  <li>
+                    <a
                       href="#fsae-ai"
                       className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
                     >
@@ -217,6 +236,24 @@ export function TechnicalSlide() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* High Power Rocketry Club AI Integration */}
+          <div id="hprc-ai" className="mt-16 scroll-mt-32">
+            <h3 className="font-display text-2xl font-semibold text-ink">High Power Rocketry Club AI Integration</h3>
+            <div className="mt-8 flex flex-col gap-10">
+              {hprcAiProjects.map((project, i) => (
+                <div key={i} className="grid items-center gap-6 md:grid-cols-2">
+                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-white shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
+                    <Image src={project.image} alt={project.title} fill className="object-contain" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
+                    <p className="mt-2 text-grey">{project.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
