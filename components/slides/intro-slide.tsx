@@ -7,7 +7,7 @@ import { Card, SlideEyebrow } from "./slide"
 
 const background = [
   { label: "School", value: profile.school },
-  { label: "Field", value: "Mechanical Engineering (B.S.), Class of 2029" }
+  { label: "Field", value: "Pursuing a B.S. in Mechanical Engineering, Class of 2029" }
 ]
 
 const pageIcons = {

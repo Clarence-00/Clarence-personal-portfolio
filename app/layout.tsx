@@ -19,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Clarence de Medeiros — Mechanical Engineering Student',
   description:
-    'Mechanical engineering student at Worcester Polytechnic Institute with a passion for building, design, and athletics. Formula SAE Drivetrain, High Power Rocketry, and Varsity Track & Field.',
+    'Pursuing a B.S. in Mechanical Engineering at Worcester Polytechnic Institute, with a passion for building, design, and athletics. Formula SAE Drivetrain, High Power Rocketry, and Varsity Track & Field.',
   generator: 'v0.app',
   icons: {
     icon: [

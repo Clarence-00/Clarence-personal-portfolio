@@ -81,13 +81,13 @@ const fsaeAiProjects = [
   {
     title: "O2 Sensor Port Design with AI",
     description:
-      "I use AI as a design partner alongside SolidWorks to work through the exhaust's O2 sensor mount. AI helped me research sensor requirements, check the placement and angle of the threaded weld bung on the header so the sensor reads the exhaust flow, and plan the modeling steps, which I then built and refined in SolidWorks.",
+      "I used AI alongside SolidWorks to research O2 sensor requirements and check the placement and angle of the weld bung on the header, then built and refined the model in SolidWorks.",
     image: fsaeAiSensorPort,
   },
   {
     title: "AI-Assisted Exhaust Assembly",
     description:
-      "For the full header, muffler, and sensor assembly, I paired SolidWorks with AI to plan the routing, size the pipe and muffler sections, and organize the part and assembly structure. Using AI to talk through design options and catch issues early let me iterate on the layout faster before committing to fabrication.",
+      "I paired SolidWorks with AI to plan the pipe routing, size the muffler sections, and organize the assembly, catching issues early and iterating faster before fabrication.",
     image: fsaeAiExhaustAssembly,
   },
 ]
@@ -96,7 +96,7 @@ const hprcAiProjects = [
   {
     title: "Sample Turntable Designed with Claude",
     description:
-      "To learn how AI can speed up mechanism design for the rocketry club, I worked with Claude to design a sample servo-driven turntable in SolidWorks. I described what I wanted, and Claude helped lay out the parts: a cylindrical base with a pocket sized to hold a standard servo, mounting posts for the servo tabs, a side slot to route the servo wire out, and a flat platter with a center hole that seats on the servo horn. The exploded view shows how the base, servo, and platter stack together. This small test showed me how AI can turn a design idea into a working CAD model quickly, which I can apply to rotating mechanisms like the airbrakes and gimbal.",
+      "I worked with Claude to design a sample servo-driven turntable in SolidWorks: a base that holds the servo, a slot for the wire, and a platter that seats on the servo horn. It showed me how AI can quickly turn an idea into CAD for mechanisms like the airbrakes and gimbal.",
     image: hprcAiTurntable,
   },
 ]
