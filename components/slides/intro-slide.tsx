@@ -80,14 +80,14 @@ export function IntroSlide() {
           <h2 id="resume-title" className="font-display text-2xl font-semibold text-ink">Resume</h2>
           <div className="mt-4 flex flex-col gap-4">
             <a 
-              href="resume.pdf?v=3" 
+              href="resume.pdf?v=4" 
               download="Clarence-de-Medeiros-Resume.pdf"
               className="inline-flex h-11 w-fit items-center gap-2 rounded-full bg-ink px-6 text-sm font-medium text-beige-cream transition-colors hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
             >
               Download PDF
             </a>
             <object 
-              data="resume.pdf?v=3#toolbar=0&navpanes=0&scrollbar=0&view=FitH" 
+              data="resume.pdf?v=4#toolbar=0&navpanes=0&scrollbar=0&view=FitH" 
               type="application/pdf"
               className="hidden h-[680px] w-full rounded-2xl border-2 border-ink/25 bg-white md:block shadow-sm overflow-hidden" 
             />
