@@ -1,0 +1,832 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gimbal v2 Viewer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#eef0f3; --panel:#ffffff; --ink:#1b1f24; --muted:#5d6670; --line:#dde1e6;
+  --accent:#2563eb; --accent-ink:#ffffff; --chip:#f2f4f6;
+  --warn-bg:#fff3e0; --warn-ink:#8a4600; --warn-line:#f3b26b;
+  --ok:#1f8a4c; --scene:#e8ebef; --grid1:#b4bcc5; --grid2:#d3d8de;
+  --lbl-bg:rgba(255,255,255,.92); --lbl-ink:#1b1f24;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101317; --panel:#171b20; --ink:#e6e9ed; --muted:#99a3ad; --line:#272d35;
+    --accent:#6c9dff; --accent-ink:#0b1220; --chip:#1f242b;
+    --warn-bg:#352611; --warn-ink:#ffd08f; --warn-line:#7a5420;
+    --ok:#5fd394; --scene:#14181d; --grid1:#3a434d; --grid2:#232a31;
+    --lbl-bg:rgba(23,27,32,.92); --lbl-ink:#e6e9ed; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101317; --panel:#171b20; --ink:#e6e9ed; --muted:#99a3ad; --line:#272d35;
+  --accent:#6c9dff; --accent-ink:#0b1220; --chip:#1f242b;
+  --warn-bg:#352611; --warn-ink:#ffd08f; --warn-line:#7a5420;
+  --ok:#5fd394; --scene:#14181d; --grid1:#3a434d; --grid2:#232a31;
+  --lbl-bg:rgba(23,27,32,.92); --lbl-ink:#e6e9ed; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:13.5px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 370px;height:100%}
+#view{position:relative;min-height:0;min-width:0;overflow:hidden;background:var(--scene)}
+#view canvas{display:block}
+.tag{position:absolute;left:max(14px, env(safe-area-inset-left, 0px));top:12px;z-index:3;pointer-events:none;display:flex;flex-direction:column;gap:1px}
+.tag b{font-size:13px;letter-spacing:.01em}
+.tag span{color:var(--muted);font-size:12px}
+.hint{position:absolute;left:max(14px, env(safe-area-inset-left, 0px));bottom:10px;z-index:3;color:var(--muted);font-size:11.5px;pointer-events:none}
+#panel{overflow:auto;background:var(--panel);border-left:1px solid var(--line);padding-block:16px 28px;padding-left:max(18px, env(safe-area-inset-left, 0px));padding-right:max(18px, env(safe-area-inset-right, 0px))}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:17px;margin:0}
+h2{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px;font-weight:600}
+.lede{color:var(--muted);margin:8px 0 4px}
+section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+button{font:inherit;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:7px;padding:7px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.ghost{background:transparent;padding:5px 9px;font-size:12.5px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:3px;gap:3px;margin-bottom:12px}
+.seg button{border:0;background:transparent;padding:6px}
+.seg button.on{background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.15);font-weight:600}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;margin-bottom:11px}
+.row label{display:flex;align-items:center;gap:7px;font-weight:500}
+.row label small{color:var(--muted);font-weight:400}
+.row output{font-variant-numeric:tabular-nums;font-weight:600}
+.row input{grid-column:1/-1;width:100%;accent-color:var(--accent);margin:2px 0 0}
+.dot{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.btns.three{grid-template-columns:1fr 1fr 1fr}
+.tog{display:flex;align-items:center;gap:8px;margin-top:9px;cursor:pointer}
+.tog input{accent-color:var(--accent);width:15px;height:15px}
+.warn{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line);border-radius:7px;padding:8px 10px;margin:4px 0 10px;font-weight:500}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td:last-child{text-align:right;font-weight:600;white-space:nowrap;padding-left:8px}
+td small{display:block;color:var(--muted);font-weight:400}
+tr.sub td{color:var(--muted)}
+.ok{color:var(--ok)}
+.bad{color:#d33}
+.note{color:var(--muted);font-size:12px;margin-top:10px}
+.lbl{font:11px/1.25 ui-sans-serif,system-ui,sans-serif;background:var(--lbl-bg);color:var(--lbl-ink);border:1px solid var(--line);border-left:3px solid var(--c,#888);border-radius:4px;padding:2px 6px;white-space:nowrap;pointer-events:none;transform:translateY(-14px)}
+.lbl.planned{border-style:dashed;border-left-style:solid;color:var(--muted)}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr;height:auto}
+  #view{height:60vh;min-height:340px}
+  #panel{border-left:0;border-top:1px solid var(--line);padding-block:14px 28px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .hint{display:none}
+}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<div class="app">
+  <div id="view">
+    <div class="tag"><b>Plate_arm_assem_NEMA11_v2</b><span>2-DOF spherical agile-eye on a yaw turntable · units mm</span></div>
+    <div class="hint">Drag to orbit · scroll to zoom · right-drag to pan</div>
+  </div>
+  <aside id="panel">
+    <header><h1>Gimbal v2</h1><button id="theme" class="ghost">◐ Theme</button></header>
+    <p class="lede">Motors A and B tilt the board together through a closed spherical 5-bar. All five joint axes pass through C = (0, 63, 0). Yaw is a separate turntable under everything.</p>
+
+    <section>
+      <h2>Drive</h2>
+      <div class="seg"><button data-mode="motor" class="on">Motor angles</button><button data-mode="board">Board tilt</button></div>
+      <div id="motorCtl">
+        <div class="row"><label for="sA"><span class="dot" style="--c:#d7392f"></span>Motor A θ1 <small>red arm · about Z</small></label><output id="oA">0.0°</output>
+          <input type="range" id="sA" min="-30" max="30" step="0.1" value="0"></div>
+        <div class="row"><label for="sB"><span class="dot" style="--c:#2a9d4b"></span>Motor B θ2 <small>green arm · about X</small></label><output id="oB">0.0°</output>
+          <input type="range" id="sB" min="-30" max="30" step="0.1" value="0"></div>
+      </div>
+      <div id="boardCtl" hidden>
+        <div class="row"><label for="sP"><span class="dot" style="--c:#3a3e44"></span>Pitch <small>tilt about X</small></label><output id="oP">0.0°</output>
+          <input type="range" id="sP" min="-45" max="45" step="0.1" value="0"></div>
+        <div class="row"><label for="sR"><span class="dot" style="--c:#3a3e44"></span>Roll <small>tilt about Z</small></label><output id="oR">0.0°</output>
+          <input type="range" id="sR" min="-45" max="45" step="0.1" value="0"></div>
+      </div>
+      <div class="row"><label for="sY"><span class="dot" style="--c:#ef8a22"></span>Yaw <small>turntable · continuous</small></label><output id="oY">0.0°</output>
+        <input type="range" id="sY" min="0" max="360" step="0.5" value="0"></div>
+      <div id="warn" class="warn" hidden></div>
+      <div class="btns"><button id="sweep" class="primary">Run sweep</button><button id="home">Level home</button></div>
+    </section>
+
+    <section>
+      <h2>View</h2>
+      <div class="btns three"><button data-cam="overview">Overview</button><button data-cam="encA">Encoder A</button><button data-cam="encB">Encoder B</button></div>
+      <label class="tog"><input type="checkbox" id="explode"> Exploded view</label>
+      <label class="tog"><input type="checkbox" id="labels" checked> Labels</label>
+      <label class="tog"><input type="checkbox" id="xray"> X-ray encoder hoods and PCBs</label>
+    </section>
+
+    <section>
+      <h2>Readout</h2>
+      <table>
+        <tr><td>Motor A θ1</td><td id="rA"></td></tr>
+        <tr><td>Motor B θ2</td><td id="rB"></td></tr>
+        <tr><td>Encoder A φ<small>AS5048A · 14-bit</small></td><td id="rPhi"></td></tr>
+        <tr><td>Encoder B ψ<small>AS5048A · 14-bit</small></td><td id="rPsi"></td></tr>
+        <tr><td>Passive joint β</td><td id="rBeta"></td></tr>
+        <tr><td>Board tilt about X<small>true, from the model</small></td><td id="rTX"></td></tr>
+        <tr><td>Board tilt about Z<small>true, from the model</small></td><td id="rTZ"></td></tr>
+        <tr><td>Tilt about X<small>rebuilt from φ, ψ only</small></td><td id="rEX"></td></tr>
+        <tr><td>Tilt about Z<small>rebuilt from φ, ψ only</small></td><td id="rEZ"></td></tr>
+        <tr><td>Rebuild error</td><td id="rErr"></td></tr>
+        <tr><td>Yaw</td><td id="rYaw"></td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Live checks</h2>
+      <table>
+        <tr><td>Red ring ↔ ±X pins<small>axis angle / centre offset</small></td><td id="cA"></td></tr>
+        <tr><td>Blue ring ↔ ±Z pins<small>axis angle / centre offset</small></td><td id="cB"></td></tr>
+        <tr><td>Magnet A turn vs PCB<small>should equal |φ|</small></td><td id="cMA"></td></tr>
+        <tr><td>Magnet B turn vs PCB<small>should equal |ψ|</small></td><td id="cMB"></td></tr>
+        <tr><td>Self-test on load<small>closure sweep, home, round trip</small></td><td id="cSelf"></td></tr>
+      </table>
+      <p class="note">The sensor PCBs are fixed to the plate and the magnets to the arms, so no encoder wire crosses a moving joint. The yaw slip ring and yaw encoder are planned and not designed yet, so they appear only as labels.</p>
+    </section>
+  </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+const LIMIT = 30 * D2R;
+const C = new THREE.Vector3(0, 63, 0);
+
+/* ================= kinematics ================= */
+const Rz = a => { const c = Math.cos(a), s = Math.sin(a); return [[c,-s,0],[s,c,0],[0,0,1]]; };
+const Rx = a => { const c = Math.cos(a), s = Math.sin(a); return [[1,0,0],[0,c,-s],[0,s,c]]; };
+function mul(A, B) {
+  const r = [[0,0,0],[0,0,0],[0,0,0]];
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) for (let k = 0; k < 3; k++) r[i][j] += A[i][k] * B[k][j];
+  return r;
+}
+function fk(t1, t2) {
+  const phi = Math.atan2(Math.sin(t2), Math.cos(t1) * Math.cos(t2));
+  const R = mul(Rz(t1), Rx(phi));
+  const M = mul(Rx(-t2), R);                 // = Ry(β)·Rz(ψ)
+  const beta = Math.atan2(M[0][2], M[2][2]);
+  const psi = Math.atan2(M[1][0], M[1][1]);
+  const n = [R[0][1], R[1][1], R[2][1]];     // board normal
+  return { phi, beta, psi, R, tiltX: Math.atan2(n[2], n[1]), tiltZ: Math.atan2(-n[0], n[1]) };
+}
+// 2D Newton with a central-difference Jacobian
+function newton2(F, x0) {
+  const x = [...x0], h = 1e-6;
+  for (let it = 0; it < 40; it++) {
+    const f = F(x);
+    if (Math.hypot(f[0], f[1]) < 1e-14) break;
+    const a1 = F([x[0] + h, x[1]]), a0 = F([x[0] - h, x[1]]);
+    const b1 = F([x[0], x[1] + h]), b0 = F([x[0], x[1] - h]);
+    const J00 = (a1[0] - a0[0]) / (2*h), J10 = (a1[1] - a0[1]) / (2*h);
+    const J01 = (b1[0] - b0[0]) / (2*h), J11 = (b1[1] - b0[1]) / (2*h);
+    const det = J00 * J11 - J01 * J10;
+    if (Math.abs(det) < 1e-14) break;
+    x[0] -= ( J11 * f[0] - J01 * f[1]) / det;
+    x[1] -= (-J10 * f[0] + J00 * f[1]) / det;
+  }
+  return x;
+}
+const solveBoard = (pitch, roll) => newton2(([a, b]) => { const k = fk(a, b); return [k.tiltX - pitch, k.tiltZ - roll]; }, [roll, pitch]);
+const solveEnc = (phi, psi) => newton2(([a, b]) => { const k = fk(a, b); return [k.phi - phi, k.psi - psi]; }, [psi, phi]);
+const count14 = rad => { const n = Math.round(rad * R2D / 360 * 16384 + 8192); return ((n % 16384) + 16384) % 16384; };
+
+/* ================= renderer / scene ================= */
+const view = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+view.appendChild(renderer.domElement);
+const labelRenderer = new CSS2DRenderer();
+Object.assign(labelRenderer.domElement.style, { position: 'absolute', left: '0', top: '0', pointerEvents: 'none', zIndex: 2 });
+view.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(34, 1, 1, 6000);
+camera.position.set(235, 255, 265);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(15, 40, 15);
+controls.enableDamping = true;
+controls.minDistance = 25; controls.maxDistance = 1500;
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f96, 0.55));
+const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+sun.position.set(160, 340, 220);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -230, right: 230, top: 230, bottom: -230, near: 10, far: 900 });
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.6;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xdfe8ff, 0.45);
+fill.position.set(-220, 120, -160);
+scene.add(fill);
+
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.ShadowMaterial({ opacity: 0.16 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -90.2; ground.receiveShadow = true;
+scene.add(ground);
+let grid = null;
+
+/* ================= materials ================= */
+function mat(color, { metal = 0, rough = 0.55, opacity = 1, env = 0.7 } = {}) {
+  const m = new THREE.MeshStandardMaterial({ color, metalness: metal, roughness: rough, envMapIntensity: env });
+  if (opacity < 1) { m.transparent = true; m.opacity = opacity; m.depthWrite = false; }
+  return m;
+}
+const M = {
+  plate: mat(0x3a3e44, { rough: 0.62 }),
+  hood: mat(0x7c828a, { rough: 0.55 }),
+  red: mat(0xd7392f, { rough: 0.45 }),
+  blue: mat(0x2e6bd6, { rough: 0.45 }),
+  green: mat(0x2a9d4b, { rough: 0.45 }),
+  cyan: mat(0x22bcd0, { rough: 0.5 }),
+  orange: mat(0xef8a22, { rough: 0.5 }),
+  motor: mat(0xa8bccc, { metal: 0.45, rough: 0.38 }),
+  motorCap: mat(0x8597a7, { metal: 0.5, rough: 0.42 }),
+  steel: mat(0xcfd3d8, { metal: 1, rough: 0.3 }),
+  dark: mat(0x1d2024, { rough: 0.6 }),
+  brass: mat(0xc9a14a, { metal: 1, rough: 0.32 }),
+  gold: mat(0xe2b34a, { metal: 1, rough: 0.24 }),
+  pcbGreen: mat(0x1e7c3c, { rough: 0.5 }),
+  pcbBlack: mat(0x141517, { rough: 0.55 }),
+  chip: mat(0x1a1a1c, { rough: 0.4 }),
+  white: mat(0xefefe9, { rough: 0.6 }),
+  yellow: mat(0xf2c21b, { rough: 0.55 }),
+  tan: mat(0xb08a5a, { rough: 0.6 }),
+  cap: mat(0xd5d8dc, { rough: 0.5 }),
+  magN: mat(0xe23330, { rough: 0.35 }),
+  magS: mat(0x2f55e2, { rough: 0.35 }),
+  housing: mat(0x2b2f35, { rough: 0.6, opacity: 0.62 }),
+  platter: mat(0xa9d6ff, { rough: 0.08, opacity: 0.26 }),
+  silver: mat(0xbfc3c9, { metal: 1, rough: 0.3 }),
+};
+M.magN.emissive = new THREE.Color(0x3a0606); M.magS.emissive = new THREE.Color(0x060a3a);
+const EDGE = new THREE.LineBasicMaterial({ color: 0x0d1014, transparent: true, opacity: 0.3 });
+
+/* ================= geometry helpers ================= */
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const vec = a => (a.isVector3 ? a.clone() : new THREE.Vector3(...a));
+const Yax = V(0, 1, 0), Zax = V(0, 0, 1);
+
+function mk(geo, m, parent, edges = true) {
+  const me = new THREE.Mesh(geo, m);
+  me.castShadow = true; me.receiveShadow = true;
+  if (edges) me.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 28), EDGE));
+  parent.add(me);
+  return me;
+}
+function box(x0, x1, y0, y1, z0, z1, m, parent, edges = true) {
+  const g = new THREE.BoxGeometry(Math.abs(x1 - x0), Math.abs(y1 - y0), Math.abs(z1 - z0));
+  g.translate((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+  return mk(g, m, parent, edges);
+}
+// solid (or tapered) cylinder from a to b
+function cyl(a, b, r0, r1, m, parent, seg = 40, edges = true, thetaStart = 0, thetaLen = Math.PI * 2) {
+  a = vec(a); b = vec(b);
+  const d = b.clone().sub(a), L = d.length();
+  const g = new THREE.CylinderGeometry(r1, r0, L, seg, 1, false, thetaStart, thetaLen);
+  g.translate(0, L / 2, 0);
+  g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(Yax, d.normalize()));
+  g.translate(a.x, a.y, a.z);
+  return mk(g, m, parent, edges);
+}
+function annulusShape(rOut, rIn) {
+  const s = new THREE.Shape(); s.absarc(0, 0, rOut, 0, Math.PI * 2, false);
+  const h = new THREE.Path(); h.absarc(0, 0, rIn, 0, Math.PI * 2, true); s.holes.push(h);
+  return s;
+}
+// hollow tube from a to b
+function tube(a, b, rOut, rIn, m, parent) {
+  a = vec(a); b = vec(b);
+  const d = b.clone().sub(a), L = d.length();
+  const g = new THREE.ExtrudeGeometry(annulusShape(rOut, rIn), { depth: L, bevelEnabled: false, curveSegments: 40 });
+  g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(Zax, d.normalize()));
+  g.translate(a.x, a.y, a.z);
+  return mk(g, m, parent);
+}
+const EXO = d => ({ depth: d, bevelEnabled: false, curveSegments: 64 });
+// shape (x, z) extruded along Y from y0 to y1
+function extXZ(shape, y0, y1, m, parent, edges = true) {
+  const g = new THREE.ExtrudeGeometry(shape, EXO(y1 - y0)); g.rotateX(Math.PI / 2); g.translate(0, y1, 0);
+  return mk(g, m, parent, edges);
+}
+// shape (z, y) extruded along X from x0 to x1
+function extYZ(shape, x0, x1, m, parent, edges = true) {
+  const g = new THREE.ExtrudeGeometry(shape, EXO(x1 - x0)); g.rotateY(-Math.PI / 2); g.translate(x1, 0, 0);
+  return mk(g, m, parent, edges);
+}
+// shape (x, y) extruded along Z from z0 to z1
+function extXY(shape, z0, z1, m, parent, edges = true) {
+  const g = new THREE.ExtrudeGeometry(shape, EXO(z1 - z0)); g.translate(0, 0, z0);
+  return mk(g, m, parent, edges);
+}
+function sector(rIn, rOut, a0, a1) {
+  const s = new THREE.Shape();
+  s.moveTo(rOut * Math.cos(a0), rOut * Math.sin(a0));
+  s.absarc(0, 0, rOut, a0, a1, false);
+  s.lineTo(rIn * Math.cos(a1), rIn * Math.sin(a1));
+  s.absarc(0, 0, rIn, a1, a0, true);
+  s.closePath();
+  return s;
+}
+function rectPath(P, x0, y0, x1, y1) { const p = new P(); p.moveTo(x0, y0); p.lineTo(x1, y0); p.lineTo(x1, y1); p.lineTo(x0, y1); p.closePath(); return p; }
+function roundRectPath(P, cx, cy, w, h, r) {
+  const p = new P(), x0 = cx - w / 2, y0 = cy - h / 2, x1 = cx + w / 2, y1 = cy + h / 2;
+  p.moveTo(x0 + r, y0); p.lineTo(x1 - r, y0); p.absarc(x1 - r, y0 + r, r, -Math.PI / 2, 0, false);
+  p.lineTo(x1, y1 - r); p.absarc(x1 - r, y1 - r, r, 0, Math.PI / 2, false);
+  p.lineTo(x0 + r, y1); p.absarc(x0 + r, y1 - r, r, Math.PI / 2, Math.PI, false);
+  p.lineTo(x0, y0 + r); p.absarc(x0 + r, y0 + r, r, Math.PI, Math.PI * 1.5, false);
+  return p;
+}
+function holePath(x, y, r) { const p = new THREE.Path(); p.absarc(x, y, r, 0, Math.PI * 2, true); return p; }
+function polyShape(pts) { const s = new THREE.Shape(); s.moveTo(...pts[0]); for (const p of pts.slice(1)) s.lineTo(...p); s.closePath(); return s; }
+function chamSquare(w, c) { const h = w / 2; return polyShape([[-h + c, -h], [h - c, -h], [h, -h + c], [h, h - c], [h - c, h], [-h + c, h], [-h, h - c], [-h, -h + c]]); }
+function magnet(a, b, r, parent) {          // diametric magnet: N half red, S half blue
+  cyl(a, b, r, r, M.magN, parent, 32, false, 0, Math.PI);
+  cyl(a, b, r, r, M.magS, parent, 32, false, Math.PI, Math.PI);
+}
+
+/* exploded-view registry */
+const EXP = [];
+function part(parent, dir = [0, 0, 0], dist = 0) {
+  const g = new THREE.Group(); g.userData.ex = V(...dir).multiplyScalar(dist);
+  parent.add(g); EXP.push(g); return g;
+}
+/* labels */
+const LABELS = [];
+function label(parent, pos, text, color, planned = false) {
+  const el = document.createElement('div'); el.className = 'lbl' + (planned ? ' planned' : ''); el.textContent = text;
+  el.style.setProperty('--c', color);
+  const o = new CSS2DObject(el); o.position.copy(vec(pos)); parent.add(o); LABELS.push(o); return o;
+}
+
+/* ================= NEMA 11 28HS32-0674 ================= */
+// built along +Z: front face at z = 0, body to z = 36, shaft toward −Z
+function nema11(parent, shaftLen) {
+  const g = new THREE.Group(); parent.add(g);
+  cyl([0, 0, 0], [0, 0, 2], 11, 11, M.motorCap, g, 48);
+  extXY(chamSquare(28, 3), 2, 7, M.motorCap, g);
+  extXY(chamSquare(27.3, 3.3), 7, 31, M.motor, g);
+  extXY(chamSquare(28, 3), 31, 36, M.motorCap, g);
+  for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
+    cyl([11.5 * sx, 11.5 * sy, 36], [11.5 * sx, 11.5 * sy, 37.1], 2, 2, M.steel, g, 20);
+    cyl([11.5 * sx, 11.5 * sy, 1.7], [11.5 * sx, 11.5 * sy, 2.05], 1.3, 1.3, M.dark, g, 16, false);
+  }
+  box(-5, 5, 13.6, 16.2, 29, 35.5, M.white, g);                // lead exit
+  cyl([0, 0, 0], [0, 0, -shaftLen], 2.5, 2.5, M.steel, g, 28);  // Ø5 shaft
+  box(1.6, 2.6, -2.6, 2.6, -shaftLen, -1, M.steel, g, false);   // D-flat hint
+  return g;
+}
+
+/* ================= assembly ================= */
+const staticRoot = new THREE.Group(); scene.add(staticRoot);
+const yawGroup = new THREE.Group(); scene.add(yawGroup);
+
+// ---- yaw turntable (world) ----
+const housingP = part(staticRoot, [0, -1, 0], 45);
+cyl([0, -90, 0], [0, -32, 0], 52, 52, M.housing, housingP, 72, true);
+tube([0, -90, 0], [0, -86, 0], 52.4, 46, M.dark, housingP);
+tube([0, -36, 0], [0, -32, 0], 52.4, 30, M.dark, housingP);
+label(housingP, [0, -62, 52], 'Yaw housing (fixed)', '#555');
+label(housingP, [-36, -44, 40], 'Slip ring: planned, not designed yet', '#999', true);
+label(housingP, [-36, -76, 40], 'Yaw encoder: planned, not designed yet', '#999', true);
+const yawMotorP = part(staticRoot, [0, -1, 0], 85);
+const ym = nema11(yawMotorP, 21); ym.rotation.x = Math.PI / 2; ym.position.set(0, -53, 0);
+label(yawMotorP, [0, -66, -16], 'Yaw motor · NEMA 11', '#a8bccc');
+
+const platterP = part(yawGroup, [0, -1, 0], 32);
+cyl([0, -32, 0], [0, -27, 0], 80, 80, M.platter, platterP, 96, true);
+cyl([0, -27, 0], [0, -23, 0], 14, 14, M.steel, platterP, 40);
+cyl([0, -23, 0], [0, -10, 0], 6, 6, M.steel, platterP, 32);
+label(platterP, [74, -29, 22], 'Yaw platter (rotates)', '#7fb8e8');
+
+// ---- base plate (orange octagon) ----
+const baseP = part(yawGroup, [0, -1, 0], 18);
+{
+  const cx = 27.5, cz = 27.5, h = 50, c = 16;
+  extXZ(polyShape([[cx - h + c, cz - h], [cx + h - c, cz - h], [cx + h, cz - h + c], [cx + h, cz + h - c],
+    [cx + h - c, cz + h], [cx - h + c, cz + h], [cx - h, cz + h - c], [cx - h, cz - h + c]]), -10, 13, M.orange, baseP);
+  label(baseP, [72, 13, 72], 'Base plate', '#ef8a22');
+}
+
+// ---- motor holders (cyan) ----
+const holderAP = part(yawGroup, [0, 0, 1], 30);
+{
+  const s = rectPath(THREE.Shape, -17.5, 13, 17.5, 94);
+  s.holes.push(holePath(0, 63, 7));
+  for (const a of [-1, 1]) for (const b of [-1, 1]) s.holes.push(holePath(11.5 * a, 63 + 11.5 * b, 1.4));
+  extXY(s, 42, 50, M.cyan, holderAP);
+  box(-17.5, 17.5, 13, 18, 50, 67.5, M.cyan, holderAP);
+}
+const holderBP = part(yawGroup, [1, 0, 0], 30);
+{
+  const s = rectPath(THREE.Shape, -17.5, 13, 17.5, 94);
+  s.holes.push(holePath(0, 63, 7));
+  for (const a of [-1, 1]) for (const b of [-1, 1]) s.holes.push(holePath(11.5 * a, 63 + 11.5 * b, 1.4));
+  extYZ(s, 47, 55, M.cyan, holderBP);
+  box(55, 72.7, 13, 18, -17.5, 17.5, M.cyan, holderBP);
+}
+
+// ---- motors A and B ----
+const motorAP = part(yawGroup, [0, 0, 1], 58);
+{ const m = nema11(motorAP, 8); m.position.set(0, 63, 50); }
+label(motorAP, [0, 80, 70], 'Motor A · NEMA 11 · θ1', '#d7392f');
+const motorBP = part(yawGroup, [1, 0, 0], 58);
+{ const m = nema11(motorBP, 8); m.rotation.y = Math.PI / 2; m.position.set(55, 63, 0); }
+label(motorBP, [75, 80, 0], 'Motor B · NEMA 11 · θ2', '#2a9d4b');
+
+// ---- gimbal (origin at C) ----
+const gimbal = new THREE.Group(); gimbal.position.copy(C); yawGroup.add(gimbal);
+const redJoint = new THREE.Group(); gimbal.add(redJoint);
+const greenJoint = new THREE.Group(); gimbal.add(greenJoint);
+const blueJoint = new THREE.Group(); greenJoint.add(blueJoint);
+const plateJoint = new THREE.Group(); gimbal.add(plateJoint);
+
+// RED main arm: horizontal half hoop on +Z, rings at ±X, hub on +Z
+const redP = part(redJoint, [0, 0, 1], 22);
+{
+  const a = Math.asin(6.8 / 40);
+  extXZ(sector(38, 42, a, Math.PI - a), -2.5, 2.5, M.red, redP);
+  for (const s of [-1, 1]) {
+    tube([37.5 * s, 0, 0], [42.5 * s, 0, 0], 7, 6, M.red, redP);
+    tube([37.5 * s, 0, 0], [41.37 * s, 0, 0], 6, 4.5, M.red, redP);   // Ø9 bore, Ø12×1.13 counterbore outside
+  }
+  cyl([0, 0, 41], [0, 0, 50], 6, 6, M.red, redP, 40);
+  label(redP, [22, 4, 36], 'Red main arm', '#d7392f');
+}
+// Encoder A magnet cap on the red ring's −X outer face
+const capAP = part(redP, [-1, 0, 0], 10);
+{
+  cyl([-41.37, 0, 0], [-42.5, 0, 0], 5.95, 5.95, M.cap, capAP, 40);   // spigot into counterbore
+  cyl([-42.5, 0, 0], [-44, 0, 0], 7, 7, M.cap, capAP, 40);
+  tube([-44, 0, 0], [-46.5, 0, 0], 7, 3, M.cap, capAP);
+  magnet([-44, 0, 0], [-46.5, 0, 0], 3, capAP);                        // Ø6 × 2.5 diametric
+}
+
+// GREEN tertiary arm: Motor B hub on +X, quarter arc down to the vertical pin
+const greenP = part(greenJoint, [1, 0, 0], 22);
+{
+  cyl([44, 0, 0], [55, 0, 0], 6, 6, M.green, greenP, 40);
+  cyl([44, 0, 0], [47, 0, 0], 15, 15, M.green, greenP, 48);
+  extXY(sector(45, 49, -Math.PI / 2, -17 * D2R), -2.5, 2.5, M.green, greenP);
+  cyl([0, -49, 0], [0, -45, 0], 5, 5, M.green, greenP, 32);
+  cyl([0, -46, 0], [0, -33, 0], 2.5, 2.5, M.steel, greenP, 24);       // vertical pin for joint β
+  label(greenP, [34, -36, 0], 'Green tertiary arm', '#2a9d4b');
+}
+
+// BLUE secondary arm: vertical half hoop below the plate, rings at ±Z, hub at the bottom
+const blueP = part(blueJoint, [0, -1, 0], 22);
+{
+  const a = Math.asin(6.8 / 35);
+  extYZ(sector(33, 37, Math.PI + a, 2 * Math.PI - a), -2.5, 2.5, M.blue, blueP);
+  for (const s of [-1, 1]) {
+    tube([0, 0, 32.5 * s], [0, 0, 37.5 * s], 7, 6, M.blue, blueP);
+    tube([0, 0, 32.5 * s], [0, 0, 36.37 * s], 6, 4.5, M.blue, blueP);
+  }
+  cyl([0, -40, 0], [0, -32, 0], 6, 6, M.blue, blueP, 40);
+  label(blueP, [0, -30, -24], 'Blue secondary arm', '#2e6bd6');
+}
+const capBP = part(blueP, [0, 0, -1], 10);
+{
+  cyl([0, 0, -36.37], [0, 0, -37.5], 5.95, 5.95, M.cap, capBP, 40);
+  cyl([0, 0, -37.5], [0, 0, -39], 7, 7, M.cap, capBP, 40);
+  tube([0, 0, -39], [0, 0, -41.5], 7, 3, M.cap, capBP);
+  magnet([0, 0, -39], [0, 0, -41.5], 3, capBP);
+}
+
+// ---- Mars board plate (plate frame) ----
+function plateOutline() {
+  const R = 35.56, nx = 12.7, nz = 31, t0 = Math.acos(nx / R);
+  const s = new THREE.Shape();
+  s.moveTo(nx, nz); s.lineTo(nx, R * Math.sin(t0));
+  s.absarc(0, 0, R, t0, -t0, true);
+  s.lineTo(nx, -nz); s.lineTo(-nx, -nz); s.lineTo(-nx, -R * Math.sin(t0));
+  s.absarc(0, 0, R, t0 - Math.PI, -Math.PI - t0, true);
+  s.lineTo(-nx, nz); s.closePath();
+  return s;
+}
+{
+  const lower = plateOutline();
+  for (const a of [-20, 20]) for (const b of [-20, 20]) lower.holes.push(holePath(a, b, 1.525));
+  extXZ(lower, -5.08, 0, M.plate, plateJoint, false);
+  const upper = plateOutline(); upper.holes.push(roundRectPath(THREE.Path, 0, 0, 50, 50, 5));
+  extXZ(upper, 0, 5.08, M.plate, plateJoint, true);
+  // integral snap pins: ±X (into red rings) and ±Z (into blue rings)
+  for (const s of [-1, 1]) {
+    cyl([25 * s, 0, 0], [37.5 * s, 0, 0], 7, 7, M.plate, plateJoint, 40);
+    cyl([37.5 * s, 0, 0], [41 * s, 0, 0], 4.2, 4.2, M.plate, plateJoint, 32);
+    cyl([41 * s, 0, 0], [42.5 * s, 0, 0], 4.5, 3.7, M.plate, plateJoint, 32);
+    cyl([0, 0, 25 * s], [0, 0, 32.5 * s], 7, 7, M.plate, plateJoint, 40);
+    cyl([0, 0, 32.5 * s], [0, 0, 36 * s], 4.2, 4.2, M.plate, plateJoint, 32);
+    cyl([0, 0, 36 * s], [0, 0, 37.5 * s], 4.5, 3.7, M.plate, plateJoint, 32);
+  }
+  // Encoder A hood (−X)
+  box(-33, -26, 4, 15, -6, 6, M.hood, plateJoint);
+  box(-55.05, -33, 12, 15, -6, 6, M.hood, plateJoint);
+  box(-55.05, -51.05, -12.5, 15, -12, 12, M.hood, plateJoint);
+  for (const y of [-9, 9]) for (const z of [-5.5, 5.5]) tube([-55.3, y, z], [-51.05, y, z], 2, 1, M.brass, plateJoint);
+  // Encoder B hood (−Z), straddles the rim notch
+  box(-18.5, 18.5, 4, 15, -30.5, -26, M.hood, plateJoint);
+  box(-6, 6, 12, 15, -50.05, -30.5, M.hood, plateJoint);
+  box(-12, 12, -12.5, 15, -50.05, -46.05, M.hood, plateJoint);
+  for (const x of [-5.5, 5.5]) for (const y of [-9, 9]) tube([x, y, -50.3], [x, y, -46.05], 2, 1, M.brass, plateJoint);
+  label(plateJoint, [26, 8, -22], 'Mars board plate', '#3a3e44');
+}
+
+// ---- Mars board (black PCB) in the pocket ----
+const marsP = part(plateJoint, [0, 1, 0], 30);
+{
+  const s = rectPath(THREE.Shape, -25, -25, 25, 25);
+  for (const a of [-20, 20]) for (const b of [-20, 20]) s.holes.push(holePath(a, b, 1.525));
+  extXZ(s, 0, 1.6, M.pcbBlack, marsP);
+  box(-3, 11, 1.6, 2.9, -3, 11, M.chip, marsP);            // SoC
+  box(-16, -6, 1.6, 2.7, 4, 13, M.chip, marsP);            // RAM
+  box(6, 20, 1.6, 4, -17, -6, M.silver, marsP);            // RF can
+  box(17.5, 25.3, 1.6, 4.8, -4.5, 4.5, M.silver, marsP);   // USB-C
+  box(24.9, 25.4, 2.5, 3.9, -3.4, 3.4, M.dark, marsP, false);
+  cyl([12, 1.6, 19], [12, 4, 19], 3.7, 3.7, M.gold, marsP, 6);    // SMA hex
+  cyl([12, 4, 19], [12, 20.6, 19], 3.15, 3.15, M.gold, marsP, 32);  // SMA barrel (≈19 tall)
+  cyl([12, 20.6, 19], [12, 20.7, 19], 2.2, 2.2, M.white, marsP, 24, false);
+  box(-24.2, -19.5, 1.6, 6, -18, -10, M.white, marsP);     // white connector (Encoder A)
+  box(-18, -10, 1.6, 6, -24.2, -19.5, M.yellow, marsP);    // yellow connector (Encoder B)
+  const pas = [[-8, -8], [-6, -12], [-2, -15], [2, -9], [14, 10], [16, 14], [-12, 18], [-4, 18], [0, 21], [-20, 2], [-20, -4], [20, -20.5]];
+  for (const [x, z] of pas) box(x, x + 1.6, 1.6, 2.2, z, z + 0.8, M.tan, marsP, false);
+  label(marsP, [-4, 14, 8], 'Mars board', '#111');
+}
+
+// ---- AS5048A adapter board (canonical frame: chip at origin facing +Z) ----
+function encoderBoard() {
+  const g = new THREE.Group();
+  const s = rectPath(THREE.Shape, -11, -20.5, 11, 7.5);
+  for (const a of [-9, 9]) for (const b of [-5.5, 5.5]) s.holes.push(holePath(a, b, 1.1));
+  extXY(s, -1.75, 0, M.pcbGreen, g);
+  box(-2.5, 2.5, -2.2, 2.2, 0, 0.8, M.chip, g);                          // AS5048A, face at z = 0.8
+  for (let i = 0; i < 7; i++) for (const sy of [-1, 1]) {
+    const x = -1.95 + i * 0.65;
+    box(x - 0.13, x + 0.13, sy * 2.2, sy * 2.9, 0, 0.25, M.silver, g, false);
+  }
+  box(4, 5.6, -1, 0.2, 0, 0.8, M.tan, g, false);
+  box(-5.6, -4, -1, 0.2, 0, 0.8, M.tan, g, false);
+  box(-10.16, 10.16, -19.97, -17.43, 0, 2.5, M.dark, g);                 // 8-pin header body
+  for (let i = 0; i < 8; i++) { const x = (i - 3.5) * 2.54; box(x - 0.32, x + 0.32, -19.02, -18.38, -1.75, 6, M.gold, g, false); }
+  for (const a of [-9, 9]) for (const b of [-5.5, 5.5]) cyl([a, b, 0], [a, b, 1.3], 1.9, 1.9, M.steel, g, 20);
+  return g;
+}
+const pcbAP = part(plateJoint, [-1, 0, 0], 16);
+const pcbA = encoderBoard(); pcbAP.add(pcbA);
+pcbA.applyMatrix4(new THREE.Matrix4().makeBasis(V(0, 1, 0), V(0, 0, 1), V(1, 0, 0)).setPosition(-49.3, 0, 0));
+label(pcbAP, [-53, 17, -14], 'Encoder A · AS5048A · reads φ', '#1e7c3c');
+const pcbBP = part(plateJoint, [0, 0, -1], 16);
+const pcbB = encoderBoard(); pcbBP.add(pcbB);
+pcbB.applyMatrix4(new THREE.Matrix4().makeBasis(V(0, -1, 0), V(1, 0, 0), V(0, 0, 1)).setPosition(0, 0, -44.3));
+label(pcbBP, [-14, 17, -53], 'Encoder B · AS5048A · reads ψ', '#1e7c3c');
+
+// ---- encoder wires (all on the plate) ----
+const wires = new THREE.Group(); plateJoint.add(wires);
+const WIRE_COL = [0xd32f2f, 0x222222, 0xf5c518, 0x1e88e5];
+function wire(pts, color) {
+  const curve = new THREE.CatmullRomCurve3(pts.map(p => V(...p)), false, 'centripetal');
+  mk(new THREE.TubeGeometry(curve, 80, 0.42, 8, false), mat(color, { rough: 0.5 }), wires, false);
+}
+for (let k = 0; k < 4; k++) {
+  const p = (k + 2 - 3.5) * 2.54, dz = (k - 1.5) * 1.3;
+  // Encoder A: pin (x −43.3, y p, z −18.7) → over the hood → white connector
+  wire([[-43.3, p, -18.7], [-41.6, p + 1.5, -18.7], [-40, 17, -17.5 + dz * 0.5], [-32, 16.5, -15 + dz], [-26.2, 8, -14 + dz], [-24.3, 3.6, -14 + dz]], WIRE_COL[k]);
+  // Encoder B: pin (x −18.7, y −p, z −38.3) → over the beam → yellow connector
+  wire([[-18.7, -p, -38.3], [-18.7, -p + 1.5, -36.6], [-17.2 + dz * 0.5, 17, -31], [-15.6 + dz, 16.8, -25.4], [-14.6 + dz, 9, -24.5], [-14 + dz, 3.8, -24.3]], WIRE_COL[k]);
+}
+
+/* ================= state & apply ================= */
+const state = { t1: 0, t2: 0, yaw: 0, mode: 'motor' };
+let explodeCur = 0, explodeTarget = 0;
+const $ = id => document.getElementById(id);
+const fmt = (rad, d = 2) => { const x = rad * R2D; return (x < 0 ? '−' : '') + Math.abs(x).toFixed(d) + '°'; };
+
+const tmpQ1 = new THREE.Quaternion(), tmpQ2 = new THREE.Quaternion();
+function axisErr(objA, objB, axis) {
+  const a = axis.clone().applyQuaternion(objA.getWorldQuaternion(tmpQ1));
+  const b = axis.clone().applyQuaternion(objB.getWorldQuaternion(tmpQ2));
+  return Math.atan2(a.clone().cross(b).length(), Math.abs(a.dot(b)));
+}
+function pointErr(objA, objB, p) { return objA.localToWorld(p.clone()).distanceTo(objB.localToWorld(p.clone())); }
+function relTurn(objA, objB) {
+  const q = objA.getWorldQuaternion(new THREE.Quaternion()).invert().multiply(objB.getWorldQuaternion(new THREE.Quaternion()));
+  return 2 * Math.atan2(Math.hypot(q.x, q.y, q.z), Math.abs(q.w));
+}
+
+function pose(t1, t2, yaw) {
+  const k = fk(t1, t2);
+  redJoint.rotation.set(0, 0, t1);
+  greenJoint.rotation.set(t2, 0, 0);
+  blueJoint.rotation.set(0, k.beta, 0);
+  plateJoint.rotation.set(k.phi, 0, t1, 'ZXY');     // R_plate = Rz(θ1)·Rx(φ)
+  yawGroup.rotation.y = yaw;
+  scene.updateMatrixWorld(true);
+  return k;
+}
+function closure() {
+  return {
+    a: axisErr(plateJoint, redJoint, V(1, 0, 0)), aP: Math.max(pointErr(plateJoint, redJoint, V(40, 0, 0)), pointErr(plateJoint, redJoint, V(-40, 0, 0))),
+    b: axisErr(plateJoint, blueJoint, V(0, 0, 1)), bP: Math.max(pointErr(plateJoint, blueJoint, V(0, 0, 35)), pointErr(plateJoint, blueJoint, V(0, 0, -35))),
+    mA: relTurn(plateJoint, redJoint), mB: relTurn(plateJoint, blueJoint),
+  };
+}
+
+function apply({ skipBoard = false } = {}) {
+  const k = pose(state.t1, state.t2, state.yaw);
+  // readouts
+  $('rA').textContent = fmt(state.t1); $('rB').textContent = fmt(state.t2);
+  $('rPhi').textContent = `${fmt(k.phi)} · ${count14(k.phi)}`;
+  $('rPsi').textContent = `${fmt(k.psi)} · ${count14(k.psi)}`;
+  $('rBeta').textContent = fmt(k.beta);
+  $('rTX').textContent = fmt(k.tiltX, 3); $('rTZ').textContent = fmt(k.tiltZ, 3);
+  const [e1, e2] = solveEnc(k.phi, k.psi), kr = fk(e1, e2);
+  $('rEX').textContent = fmt(kr.tiltX, 3); $('rEZ').textContent = fmt(kr.tiltZ, 3);
+  const err = Math.max(Math.abs(kr.tiltX - k.tiltX), Math.abs(kr.tiltZ - k.tiltZ)) * R2D;
+  $('rErr').textContent = err.toFixed(6) + '°';
+  const yd = ((state.yaw * R2D) % 360 + 360) % 360;
+  $('rYaw').textContent = yd.toFixed(1) + '°';
+  // live checks
+  const c = closure();
+  const okc = (deg, mm) => `<span class="${deg < 1e-6 && mm < 1e-6 ? 'ok' : 'bad'}">${deg.toFixed(4)}° / ${mm.toFixed(4)} mm</span>`;
+  $('cA').innerHTML = okc(c.a * R2D, c.aP);
+  $('cB').innerHTML = okc(c.b * R2D, c.bP);
+  $('cMA').textContent = `${(c.mA * R2D).toFixed(2)}° (φ ${Math.abs(k.phi * R2D).toFixed(2)}°)`;
+  $('cMB').textContent = `${(c.mB * R2D).toFixed(2)}° (ψ ${Math.abs(k.psi * R2D).toFixed(2)}°)`;
+  // sliders
+  $('sA').value = (state.t1 * R2D).toFixed(1); $('oA').textContent = fmt(state.t1, 1);
+  $('sB').value = (state.t2 * R2D).toFixed(1); $('oB').textContent = fmt(state.t2, 1);
+  if (!skipBoard) {
+    $('sP').value = (k.tiltX * R2D).toFixed(1); $('oP').textContent = fmt(k.tiltX, 1);
+    $('sR').value = (k.tiltZ * R2D).toFixed(1); $('oR').textContent = fmt(k.tiltZ, 1);
+  }
+  $('sY').value = yd.toFixed(1); $('oY').textContent = yd.toFixed(1) + '°';
+  return k;
+}
+
+function warn(msg) { const w = $('warn'); w.hidden = !msg; w.textContent = msg || ''; }
+
+/* ================= UI ================= */
+let sweeping = false, sweepT = 0;
+function stopSweep() { if (!sweeping) return; sweeping = false; $('sweep').textContent = 'Run sweep'; }
+
+function setMode(m) {
+  state.mode = m;
+  document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
+  $('motorCtl').hidden = m !== 'motor'; $('boardCtl').hidden = m !== 'board';
+  warn(''); apply();
+}
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+$('sA').addEventListener('input', e => { stopSweep(); state.t1 = +e.target.value * D2R; apply(); });
+$('sB').addEventListener('input', e => { stopSweep(); state.t2 = +e.target.value * D2R; apply(); });
+$('sY').addEventListener('input', e => { stopSweep(); state.yaw = +e.target.value * D2R; apply({ skipBoard: state.mode === 'board' }); });
+
+function boardInput() {
+  stopSweep();
+  const pitch = +$('sP').value * D2R, roll = +$('sR').value * D2R;
+  $('oP').textContent = fmt(pitch, 1); $('oR').textContent = fmt(roll, 1);
+  let [t1, t2] = solveBoard(pitch, roll);
+  const over = [];
+  if (Math.abs(t1) > LIMIT) over.push(`Motor A would need ${fmt(t1, 1)}`);
+  if (Math.abs(t2) > LIMIT) over.push(`Motor B would need ${fmt(t2, 1)}`);
+  t1 = Math.max(-LIMIT, Math.min(LIMIT, t1)); t2 = Math.max(-LIMIT, Math.min(LIMIT, t2));
+  state.t1 = t1; state.t2 = t2;
+  const k = apply({ skipBoard: true });
+  warn(over.length ? `⚠ Out of range: ${over.join(', ')}. Clamped to ±30°. The board reaches pitch ${fmt(k.tiltX, 1)}, roll ${fmt(k.tiltZ, 1)}.` : '');
+}
+$('sP').addEventListener('input', boardInput);
+$('sR').addEventListener('input', boardInput);
+const snapBoard = () => { if (!$('warn').hidden) apply(); };   // on release, show the reachable tilt
+$('sP').addEventListener('change', snapBoard);
+$('sR').addEventListener('change', snapBoard);
+
+// tweens
+const tweens = [];
+function tween(dur, fn, done) { tweens.push({ t: 0, dur, fn, done }); }
+const ease = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+$('sweep').addEventListener('click', () => {
+  sweeping = !sweeping; $('sweep').textContent = sweeping ? 'Stop sweep' : 'Run sweep';
+  if (sweeping) { warn(''); sweepT = Math.asin(Math.max(-1, Math.min(1, state.t1 / (28 * D2R)))) / 0.9; }
+});
+$('home').addEventListener('click', () => {
+  stopSweep(); warn('');
+  const a = state.t1, b = state.t2;
+  tween(0.7, x => { const e = ease(x); state.t1 = a * (1 - e); state.t2 = b * (1 - e); apply(); });
+});
+
+function flyTo(pos, target, dur = 0.9) {
+  const p0 = camera.position.clone(), t0 = controls.target.clone();
+  tween(dur, x => { const e = ease(x); camera.position.lerpVectors(p0, pos, e); controls.target.lerpVectors(t0, target, e); });
+}
+document.querySelectorAll('[data-cam]').forEach(b => b.addEventListener('click', () => {
+  scene.updateMatrixWorld(true);
+  const which = b.dataset.cam;
+  if (which === 'overview') { setXray(false); flyTo(V(235, 255, 265), V(15, 40, 15)); return; }
+  setXray(true);
+  if (which === 'encA') flyTo(plateJoint.localToWorld(V(-118, 38, -34)), plateJoint.localToWorld(V(-47.5, 0, -4)));
+  else flyTo(plateJoint.localToWorld(V(-34, 38, -118)), plateJoint.localToWorld(V(-4, 0, -42.5)));
+}));
+
+$('explode').addEventListener('change', e => { explodeTarget = e.target.checked ? 1 : 0; });
+$('labels').addEventListener('change', e => { labelRenderer.domElement.style.display = e.target.checked ? '' : 'none'; });
+function setXray(on) {
+  $('xray').checked = on;
+  for (const m of [M.hood, M.pcbGreen]) { m.transparent = on; m.opacity = on ? 0.22 : 1; m.depthWrite = !on; m.needsUpdate = true; }
+}
+$('xray').addEventListener('change', e => setXray(e.target.checked));
+
+// theme
+function applySceneTheme() {
+  const cs = getComputedStyle(document.documentElement);
+  scene.background = new THREE.Color(cs.getPropertyValue('--scene').trim());
+  if (grid) { scene.remove(grid); grid.geometry.dispose(); }
+  grid = new THREE.GridHelper(1000, 50, new THREE.Color(cs.getPropertyValue('--grid1').trim()), new THREE.Color(cs.getPropertyValue('--grid2').trim()));
+  grid.position.y = -90.1; scene.add(grid);
+}
+$('theme').addEventListener('click', () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  applySceneTheme();
+});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applySceneTheme);
+applySceneTheme();
+
+// resize
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  renderer.setSize(w, h); labelRenderer.setSize(w, h);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(view);
+resize();
+
+/* ================= self-test ================= */
+function selfTest() {
+  const res = { closureMaxDeg: 0, closureMaxMm: 0, magnetMaxDeg: 0 };
+  for (let a = -30; a <= 30; a += 5) for (let b = -30; b <= 30; b += 5) {
+    const k = pose(a * D2R, b * D2R, (a + b) * 7 * D2R), c = closure();
+    res.closureMaxDeg = Math.max(res.closureMaxDeg, c.a * R2D, c.b * R2D);
+    res.closureMaxMm = Math.max(res.closureMaxMm, c.aP, c.bP);
+    res.magnetMaxDeg = Math.max(res.magnetMaxDeg, Math.abs(c.mA - Math.abs(k.phi)) * R2D, Math.abs(c.mB - Math.abs(k.psi)) * R2D);
+  }
+  const h = fk(0, 0);
+  res.home = { phi: h.phi, psi: h.psi, beta: h.beta, tiltX: h.tiltX, tiltZ: h.tiltZ };
+  const [t1, t2] = solveBoard(15 * D2R, -10 * D2R), r = fk(t1, t2);
+  res.roundTrip = { theta1: t1 * R2D, theta2: t2 * R2D, pitch: r.tiltX * R2D, roll: r.tiltZ * R2D };
+  res.pass = res.closureMaxDeg < 1e-6 && res.closureMaxMm < 1e-6 && res.magnetMaxDeg < 1e-4 &&
+    Object.values(res.home).every(v => Math.abs(v) < 1e-12) &&
+    Math.abs(res.roundTrip.pitch - 15) < 1e-9 && Math.abs(res.roundTrip.roll + 10) < 1e-9;
+  return res;
+}
+window.gimbalSelfTest = selfTest;
+window.gimbal = { state, apply, fk, solveBoard, solveEnc, setMode };
+{
+  const r = selfTest();
+  console.info('Gimbal v2 self-test', r);
+  $('cSelf').innerHTML = r.pass ? '<span class="ok">pass</span>' : '<span class="bad">fail (see console)</span>';
+}
+apply();
+
+/* ================= loop ================= */
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (sweeping) {
+    sweepT += dt;
+    state.t1 = 28 * D2R * Math.sin(0.9 * sweepT);
+    state.t2 = 28 * D2R * Math.sin(1.37 * sweepT + 0.6);
+    state.yaw = (state.yaw + 15 * D2R * dt) % (2 * Math.PI);
+    apply();
+  }
+  for (let i = tweens.length - 1; i >= 0; i--) {
+    const tw = tweens[i]; tw.t = Math.min(1, tw.t + dt / tw.dur); tw.fn(tw.t);
+    if (tw.t >= 1) { tweens.splice(i, 1); tw.done && tw.done(); }
+  }
+  if (Math.abs(explodeCur - explodeTarget) > 1e-4) {
+    explodeCur += (explodeTarget - explodeCur) * Math.min(1, dt * 5);
+    if (Math.abs(explodeCur - explodeTarget) < 1e-3) explodeCur = explodeTarget;
+    for (const g of EXP) g.position.copy(g.userData.ex).multiplyScalar(explodeCur);
+    wires.visible = explodeCur < 0.02;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+
+</body></html>
