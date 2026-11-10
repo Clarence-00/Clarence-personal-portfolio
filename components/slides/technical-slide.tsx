@@ -1,13 +1,10 @@
-import Image, { type StaticImageData } from "next/image"
+import Image from "next/image"
 import { Layers, Sparkles, Wrench } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
 import gimballphoto from "@/public/images/Technical/gimball-photo.png"
 import gimballphoto1 from "@/public/images/Technical/gimball-photo1.png"
 import gimballphoto2 from "@/public/images/Technical/gimball-photo2.png"
-
-import gimbalV2Overview from "@/public/images/Technical/gimbal-v2-overview.png"
-import gimbalV2Exploded from "@/public/images/Technical/gimbal-v2-exploded.png"
 
 import exhaustphoto from "@/public/images/Technical/exhaust-photo.png"
 import exhaustphoto1 from "@/public/images/Technical/exhaust-photo1.png"
@@ -26,7 +23,7 @@ const teams = [
   { id: "fsae", name: "Formula SAE", detail: "Drivetrain subteam & Exhaust Lead" },
 ]
 
-const hprcProjects: { title: string; description: string; image: StaticImageData; contain?: boolean }[] = [
+const hprcProjects = [
   {
     title: "Gimbal Mechanism Design",
     description:
@@ -44,20 +41,6 @@ const hprcProjects: { title: string; description: string; image: StaticImageData
     description:
       "The gimbal assembly positioned above its mounting plate and a section of the rocket airframe, checking fit and alignment before integrating the hardware into the vehicle.",
     image: gimballphoto2,
-  },
-  {
-    title: "Gimbal v2: Full Assembly",
-    description:
-      "The second-generation gimbal assembled: two NEMA 11 motors tilt the Mars board plate through a closed spherical five-bar linkage (red, green and blue arms), with every joint axis passing through one center point. A yaw turntable sits underneath, and a pair of AS5048A magnetic encoders read the arm angles.",
-    image: gimbalV2Overview,
-    contain: true,
-  },
-  {
-    title: "Gimbal v2: Exploded View",
-    description:
-      "The same assembly pulled apart to show each part: motor holders, motors, the three arms, the board plate with its encoder hoods and sensor boards, the Mars board, and the yaw platter and housing.",
-    image: gimbalV2Exploded,
-    contain: true,
   },
 ]
 
@@ -240,7 +223,7 @@ export function TechnicalSlide() {
               <div key={i} className="grid items-center gap-6 md:grid-cols-2">
                 {project.image ? (
                   <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className={project.contain ? "bg-white object-contain" : "object-cover"} />
+                    <Image src={project.image} alt={project.title} fill className="object-cover" />
                   </div>
                 ) : (
                   <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
