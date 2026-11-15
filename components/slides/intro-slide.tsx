@@ -76,7 +76,7 @@ export function IntroSlide() {
         </div>
 
         {/* Resume Section - Constrained to max-w-xl to align left with text above, using view=FitH to fill width */}
-        <section aria-labelledby="resume-title" className="mt-16 max-w-xl">
+        <section id="resume" aria-labelledby="resume-title" className="mt-16 max-w-xl scroll-mt-32">
           <h2 id="resume-title" className="font-display text-2xl font-semibold text-ink">Resume</h2>
           <div className="mt-4 flex flex-col gap-4">
             <a 

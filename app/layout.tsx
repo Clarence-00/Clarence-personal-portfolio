@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Fraunces, Inter } from 'next/font/google'
 import { SiteNav } from '@/components/site-nav'
+import { AskWidget } from '@/components/ask-widget'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -55,6 +56,7 @@ export default function RootLayout({
       <body className="bg-background font-sans antialiased">
         <SiteNav />
         {children}
+        <AskWidget />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

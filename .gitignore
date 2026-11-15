@@ -1,0 +1,13 @@
+# Dependencies (recreated by `npm install`)
+node_modules/
+
+# Next.js build output (recreated by `npm run build`)
+.next/
+out/
+
+# Environment variables / secrets
+.env*
+
+# Mac and editor clutter
+.DS_Store
+.Rhistory

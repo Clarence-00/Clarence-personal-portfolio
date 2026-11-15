@@ -1,7 +1,0 @@
-{
-  "/contact/page": "app/contact/page.js",
-  "/experience/page": "app/experience/page.js",
-  "/interests/page": "app/interests/page.js",
-  "/page": "app/page.js",
-  "/technical/page": "app/technical/page.js"
-}
