@@ -29,7 +29,8 @@ function prefersReducedMotion() {
 
 /** Scroll to a section and flash a highlight on it. Returns false if it isn't on the page. */
 function scrollToSection(section: SiteSection): boolean {
-  const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth"
+  // "instant", not "auto": globals.css sets scroll-behavior: smooth, which "auto" would follow.
+  const behavior: ScrollBehavior = prefersReducedMotion() ? "instant" : "smooth"
   if (!section.anchor) {
     window.scrollTo({ top: 0, behavior })
     return true
@@ -99,7 +100,8 @@ export function AskWidget() {
       }
       timer = window.setTimeout(attempt, 100)
     }
-    timer = window.setTimeout(attempt, 50)
+    // A short pause lets the new page finish laying out first.
+    timer = window.setTimeout(attempt, 100)
     return () => window.clearTimeout(timer)
   }, [pending, pathname])
 
@@ -134,7 +136,9 @@ export function AskWidget() {
       scrollToSection(section)
     } else {
       setPending(section)
-      router.push(section.page)
+      // scroll: false stops Next.js from jumping to the top of the new page,
+      // which would otherwise cancel our smooth scroll to the section.
+      router.push(section.page, { scroll: false })
     }
   }
 
