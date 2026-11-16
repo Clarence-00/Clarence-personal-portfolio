@@ -1,0 +1,21 @@
+# Conda alternative (use this if `pip install cadquery` fails on your machine, e.g. an
+# unusual Python version). Create with:
+#   conda env create -f environment.yml && conda activate cad-to-html
+#   python -m playwright install chromium
+name: cad-to-html
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - cadquery
+  - trimesh
+  - numpy
+  - scipy
+  - networkx
+  - rtree
+  - openpyxl
+  - jsonschema
+  - pip
+  - pip:
+      - manifold3d
+      - playwright

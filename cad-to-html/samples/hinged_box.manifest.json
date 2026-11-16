@@ -1,0 +1,48 @@
+{
+  "$schema": "../manifest.schema.json",
+  "model": "hinged_box",
+  "units": "mm",
+  "joints": [
+    {
+      "id": "lid_hinge",
+      "label": "Lid hinge",
+      "type": "hinge",
+      "part_ids": ["hinged_box/lid_assembly"],
+      "axis": [-1, 0, 0],
+      "pivot": [0, 34, 40],
+      "min": 0,
+      "max": 110,
+      "default": 0,
+      "confidence": "high",
+      "notes": "Rotates about the hinge-pin axis; -X so positive angles open the lid upward."
+    },
+    {
+      "id": "latch_slide",
+      "label": "Latch",
+      "type": "slider",
+      "part_ids": ["latch"],
+      "axis": [0, -1, 0],
+      "min": 0,
+      "max": 8,
+      "default": 0,
+      "confidence": "high",
+      "notes": "Slides forward over the front edge. Rides along with the lid (lid_hinge moves a superset of its parts)."
+    }
+  ],
+  "materials": {
+    "ABS": {"density": 1.05},
+    "steel": {"density": 7.85, "color": "#a9adb3"}
+  },
+  "part_materials": {
+    "hinge_pin*": "steel",
+    "*": "ABS"
+  },
+  "display": {
+    "title": "Hinged box (sample)",
+    "background": "light",
+    "up": "z",
+    "show_axes": true,
+    "edges": true,
+    "explode_scale": 1.0
+  }
+}

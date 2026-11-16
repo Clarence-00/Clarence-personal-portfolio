@@ -1,0 +1,12 @@
+# cad-to-html - Python 3.10-3.13 on macOS (Intel + Apple Silicon), Windows and Linux.
+# pip install -r requirements.txt  &&  python -m playwright install chromium
+cadquery>=2.4          # brings cadquery-ocp (OpenCascade) for STEP/IGES; pip wheels exist, conda not required
+trimesh>=4.0           # STL/OBJ/GLB loading, mesh properties
+manifold3d>=2.4        # mesh boolean engine for interference checks on mesh inputs
+numpy>=1.24
+scipy>=1.10            # used by trimesh (smooth shading, mass properties)
+networkx>=3.0          # used by trimesh scene graphs
+rtree>=1.0             # used by trimesh
+openpyxl>=3.1          # bom.xlsx
+jsonschema>=4.18       # manifest validation
+playwright>=1.40       # headless preview rendering + viewer smoke test

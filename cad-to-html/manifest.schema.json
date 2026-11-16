@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/cad-to-html/manifest.schema.json",
+  "title": "cad-to-html manifest",
+  "description": "Joints, materials and display options for one model. Coordinates are in the model's assembly (root) frame at rest, in millimetres. Part references (part_ids, part_materials keys) are tree.json node ids, or node/part names; part_materials keys may use * and ? globs.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string"},
+    "model": {"type": "string", "description": "Model name (informational)."},
+    "units": {"const": "mm"},
+    "joints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/joint"},
+      "default": []
+    },
+    "materials": {
+      "type": "object",
+      "description": "Material name -> properties.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["density"],
+        "properties": {
+          "density": {"type": "number", "exclusiveMinimum": 0, "description": "g/cm^3 (e.g. aluminium 2.7, steel 7.85, ABS 1.05)."},
+          "color": {"$ref": "#/$defs/color", "description": "Optional display colour override for parts of this material."}
+        }
+      }
+    },
+    "part_materials": {
+      "type": "object",
+      "description": "Node id / node name / part name (globs allowed) -> material name. First match wins.",
+      "additionalProperties": {"type": "string"}
+    },
+    "default_density": {"type": "number", "exclusiveMinimum": 0, "description": "g/cm^3 for parts without a material."},
+    "display": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {"type": "string"},
+        "background": {"enum": ["light", "dark"], "default": "light"},
+        "up": {"enum": ["z", "y"], "default": "z", "description": "Model up axis. CAD is usually Z-up."},
+        "show_axes": {"type": "boolean", "default": true},
+        "edges": {"type": "boolean", "default": true},
+        "explode_scale": {"type": "number", "minimum": 0, "default": 1.0, "description": "Explode distance multiplier at slider max."},
+        "hidden_parts": {"type": "array", "items": {"type": "string"}, "description": "Part ids hidden on load."},
+        "part_colors": {"type": "object", "additionalProperties": {"$ref": "#/$defs/color"}, "description": "Part id or name -> colour override."}
+      }
+    },
+    "review_notes": {
+      "type": "array", "items": {"type": "string"},
+      "description": "Free-form notes (e.g. from the auto-guesser) for a human to review. Ignored by the viewer."
+    }
+  },
+  "$defs": {
+    "vec3": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3},
+    "color": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+    "joint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "part_ids", "axis"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+        "label": {"type": "string"},
+        "type": {
+          "enum": ["hinge", "slider", "free"],
+          "description": "hinge: rotation about axis through pivot, limited to [min, max] degrees. slider: translation along axis, [min, max] mm. free: unlimited rotation about axis through pivot (degrees)."
+        },
+        "part_ids": {
+          "type": "array", "items": {"type": "string"}, "minItems": 1,
+          "description": "Nodes that move together. An assembly id moves all its parts. A joint whose parts include all of another joint's parts acts as that joint's parent (the child joint's axis rides along)."
+        },
+        "axis": {"$ref": "#/$defs/vec3", "description": "Direction (need not be unit length). Positive values rotate right-handed about it / translate along it."},
+        "pivot": {"$ref": "#/$defs/vec3", "description": "Point on the rotation axis (hinge/free). Ignored for sliders."},
+        "min": {"type": "number"},
+        "max": {"type": "number"},
+        "default": {"type": "number", "description": "Value on load (default 0, clamped to limits)."},
+        "confidence": {"enum": ["high", "medium", "low"], "description": "low = auto-guessed, please review."},
+        "notes": {"type": "string"}
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"enum": ["hinge", "free"]}}}, "then": {"required": ["pivot"]}},
+        {"if": {"properties": {"type": {"enum": ["hinge", "slider"]}}}, "then": {"required": ["min", "max"]}}
+      ]
+    }
+  }
+}

@@ -1,0 +1,146 @@
+<!doctype html>
+<!-- cad-to-html viewer template. build.py fills the placeholders:
+     __TITLE__, __MODEL_DATA__ (JSON), __GLB_BASE64__, /*__THREE_JS__*/, /*__VIEWER_JS__*/ -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #f3f4f6; --panel: rgba(255,255,255,0.94); --text: #1f2937; --muted: #6b7280;
+    --border: #d9dde3; --accent: #2563eb; --accent-soft: #dbe7ff; --hover: #eef1f5;
+    --warn: #b45309; --warn-soft: #fef3c7;
+  }
+  body.dark {
+    --bg: #1b1e23; --panel: rgba(36,40,47,0.95); --text: #e5e7eb; --muted: #9ca3af;
+    --border: #3a404a; --accent: #60a5fa; --accent-soft: #23395b; --hover: #2e333b;
+    --warn: #fbbf24; --warn-soft: #3d3218;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body { background: var(--bg); color: var(--text); font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  #viewport { position: fixed; inset: 0; }
+  #viewport canvas { display: block; width: 100%; height: 100%; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+           box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: auto; }
+  #toolbar { top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; gap: 4px;
+             padding: 5px; max-width: calc(100vw - 20px); justify-content: center; overflow: visible; }
+  #tree-panel { top: 10px; left: 10px; width: 270px; max-height: calc(100vh - 20px); padding: 10px; }
+  #side-panel { top: 10px; right: 10px; width: 290px; max-height: calc(100vh - 20px); padding: 10px; }
+  #toolbar { z-index: 3; } #tree-panel, #side-panel { z-index: 2; }
+  @media (min-width: 900px) { #tree-panel, #side-panel { top: 62px; max-height: calc(100vh - 72px); } }
+  h1 { font-size: 14px; margin: 0 0 6px; word-break: break-word; }
+  h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 6px; }
+  h2:first-child { margin-top: 0; }
+  button, select, input[type=number] { font: inherit; color: var(--text); background: transparent;
+           border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+  button:hover { background: var(--hover); }
+  button.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  select { background: var(--panel); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  input[type=number] { width: 72px; cursor: text; padding: 2px 4px; }
+  .muted { color: var(--muted); }
+  .row { display: flex; align-items: center; gap: 6px; margin: 4px 0; }
+  .row > .grow { flex: 1; min-width: 0; }
+  .sep { width: 1px; background: var(--border); margin: 2px 3px; }
+  /* tree */
+  #tree ul { list-style: none; margin: 0; padding-left: 14px; }
+  #tree > ul { padding-left: 0; }
+  .node { display: flex; align-items: center; gap: 4px; padding: 1px 4px; border-radius: 5px; cursor: pointer; }
+  .node:hover { background: var(--hover); }
+  .node.selected { background: var(--accent-soft); }
+  .node .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .node .caret { width: 12px; color: var(--muted); font-size: 10px; text-align: center; }
+  .node .swatch { width: 10px; height: 10px; border-radius: 2px; flex: none; border: 1px solid rgba(0,0,0,.2); }
+  .node .iso { border: none; padding: 0 3px; color: var(--muted); font-size: 12px; visibility: hidden; }
+  .node:hover .iso { visibility: visible; }
+  li.collapsed > ul { display: none; }
+  /* info */
+  table.kv { width: 100%; border-collapse: collapse; }
+  table.kv td { padding: 2px 0; vertical-align: top; }
+  table.kv td:first-child { color: var(--muted); width: 38%; }
+  .joint { border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; margin-bottom: 6px; }
+  .badge { font-size: 10px; padding: 1px 5px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); }
+  .limits { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  #measure-label { position: fixed; pointer-events: none; background: var(--accent); color: #fff; padding: 2px 6px;
+                   border-radius: 6px; font-size: 12px; transform: translate(-50%, -130%); display: none; z-index: 1; white-space: nowrap; }
+  #message { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); padding: 16px 20px; display: none; max-width: 80vw; }
+  #hint { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 12px; color: var(--muted); pointer-events: none; }
+  .drawer-toggle { display: none; }
+  @media (max-width: 760px) {
+    #tree-panel, #side-panel { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; max-height: 45vh; display: none; }
+    #tree-panel.open, #side-panel.open { display: block; }
+    .drawer-toggle { display: inline-block; }
+    #hint, #toolbar .sep { display: none; }
+    #toolbar { gap: 3px; padding: 4px; }
+    #toolbar button { padding: 3px 6px; font-size: 12px; }
+  }
+  body.render-mode .panel, body.render-mode #hint { display: none !important; }
+</style>
+</head>
+<body>
+<div id="viewport"></div>
+
+<div id="toolbar" class="panel" role="toolbar">
+  <button class="drawer-toggle" data-action="toggle-tree">Parts</button>
+  <button data-action="reset-view" title="Reset view (R)">Reset</button>
+  <button data-action="fit" title="Fit to visible (F)">Fit</button>
+  <div class="sep"></div>
+  <button data-view="iso">Iso</button><button data-view="front">Front</button>
+  <button data-view="top">Top</button><button data-view="right">Right</button>
+  <div class="sep"></div>
+  <button data-action="edges" title="Edges">Edges</button>
+  <button data-action="wireframe" title="Wireframe">Wire</button>
+  <button data-action="axes" title="Axes helper">Axes</button>
+  <button data-action="theme" title="Light/dark background">Dark</button>
+  <div class="sep"></div>
+  <button data-action="measure" title="Measure: click two points (M)">Measure</button>
+  <button data-action="screenshot" title="Download PNG">Screenshot</button>
+  <button class="drawer-toggle" data-action="toggle-side">Tools</button>
+</div>
+
+<div id="tree-panel" class="panel">
+  <h1 id="title"></h1>
+  <div class="muted" id="summary"></div>
+  <div class="row" style="margin-top:8px"><button data-action="show-all">Show all</button><button data-action="clear-selection">Clear selection</button></div>
+  <h2>Parts</h2>
+  <div id="tree"></div>
+</div>
+
+<div id="side-panel" class="panel">
+  <h2>Selection</h2>
+  <div id="info" class="muted">Click a part (or a tree row) to select it.</div>
+  <div id="opacity-row" class="row" style="display:none">
+    <span class="muted">Opacity</span><input id="opacity" class="grow" type="range" min="0.05" max="1" step="0.05" value="1">
+  </div>
+
+  <h2>Explode</h2>
+  <input id="explode" type="range" min="0" max="1" step="0.01" value="0">
+
+  <h2>Section</h2>
+  <div class="row">
+    <label><input id="section-on" type="checkbox"> Enable</label>
+    <select id="section-axis"><option>X</option><option>Y</option><option selected>Z</option></select>
+    <label><input id="section-flip" type="checkbox"> Flip</label>
+  </div>
+  <input id="section-pos" type="range" min="0" max="1" step="0.002" value="0.5">
+
+  <h2>Joints</h2>
+  <div id="joints"></div>
+  <div class="row" id="joint-actions"><button data-action="reset-joints">Reset joints</button></div>
+
+  <h2>Measure</h2>
+  <div id="measure-info" class="muted">Press “Measure”, then click two points on the model.</div>
+</div>
+
+<div id="measure-label"></div>
+<div id="message" class="panel"></div>
+<div id="hint">Drag: orbit · Right-drag / Shift-drag: pan · Wheel: zoom · Click: select · Esc: clear</div>
+
+<script id="model-data" type="application/json">__MODEL_DATA__</script>
+<script id="glb-data" type="application/octet-stream">__GLB_BASE64__</script>
+<script>/*__THREE_JS__*/</script>
+<script>/*__VIEWER_JS__*/</script>
+</body>
+</html>
