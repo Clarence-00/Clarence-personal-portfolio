@@ -91,14 +91,16 @@ export const sections: SiteSection[] = [
   {
     id: "hprc-ai",
     page: "/technical",
-    anchor: "hprc-ai",
+    // Same destination as the AI Integration card's link: the interactive Gimbal v2 model.
+    // (The chat scrolls within the page, so it goes to the embedded model rather than a new tab.)
+    anchor: "gimbal-viewer",
     title: "High Power Rocketry Club AI Integration",
     summary:
-      "A sample servo-driven turntable designed with Claude in SolidWorks, a test case for the airbrakes and gimbal.",
+      "The interactive 3D Gimbal v2 model: orbit, zoom, move the motors, and explode the assembly.",
     keywords: [
       "ai", "artificial intelligence", "claude", "llm", "rocketry", "rocket", "hprc",
-      "turntable", "servo", "servo horn", "platter", "solidworks", "cad", "airbrakes",
-      "ai design", "ai integration",
+      "gimbal", "interactive", "3d model", "solidworks", "cad", "ai design",
+      "ai integration",
     ],
   },
   {
@@ -113,19 +115,6 @@ export const sections: SiteSection[] = [
       "vehicle", "automotive", "drivetrain", "exhaust", "exhaust lead", "muffler",
       "header", "engine", "chassis", "routing", "sensor", "o2 sensor", "3d scan",
       "scan", "scanning", "flange", "fabrication", "motorsport", "team photo",
-    ],
-  },
-  {
-    id: "fsae-ai",
-    page: "/technical",
-    anchor: "fsae-ai",
-    title: "Formula SAE AI Integration",
-    summary:
-      "Using AI alongside SolidWorks to place the O2 sensor port and plan the exhaust assembly.",
-    keywords: [
-      "ai", "artificial intelligence", "llm", "formula", "fsae", "exhaust", "o2",
-      "o2 sensor", "sensor port", "weld bung", "bung", "pipe routing", "muffler",
-      "solidworks", "cad", "ai design", "ai integration",
     ],
   },
   {

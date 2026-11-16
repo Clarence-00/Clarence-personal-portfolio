@@ -2,20 +2,18 @@ import Image from "next/image"
 import { Layers, Sparkles, Wrench } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
-import gimballphoto from "@/public/images/Technical/gimball-photo.png"
-import gimballphoto1 from "@/public/images/Technical/gimball-photo1.png"
+import gimbalV2Assembly from "@/public/images/Technical/gimbal-v2-assembly.png"
+import gimbalV2YawExploded from "@/public/images/Technical/gimbal-v2-yaw-exploded.png"
 import gimballphoto2 from "@/public/images/Technical/gimball-photo2.png"
 
-import exhaustphoto from "@/public/images/Technical/exhaust-photo.png"
-import exhaustphoto1 from "@/public/images/Technical/exhaust-photo1.png"
-import exhaustphoto2 from "@/public/images/Technical/exhaust-photo2.png"
+import exhaustChassisRear from "@/public/images/Technical/exhaust-chassis-rear.png"
+import exhaustEngineAssembly from "@/public/images/Technical/exhaust-engine-assembly.png"
+import exhaustChassisTop from "@/public/images/Technical/exhaust-chassis-top.png"
 import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 
 import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
 import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
 import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
-import fsaeAiSensorPort from "@/public/images/Technical/fsae-ai-sensor-port.png"
-import fsaeAiExhaustAssembly from "@/public/images/Technical/fsae-ai-exhaust-assembly.png"
 import hprcAiTurntable from "@/public/images/Technical/hprc-ai-turntable.png"
 
 const teams = [
@@ -25,16 +23,18 @@ const teams = [
 
 const hprcProjects = [
   {
-    title: "Gimbal Mechanism Design",
+    title: "Gimbal v2 Assembly",
     description:
-      "CAD model of the experimental GNC gimbal: the flight computer sits in a housing on a two-axis pivot, driven by two stepper motors on side brackets through color-coded linkage arms, all on a mounting plate.",
-    image: gimballphoto,
+      "CAD model of the experimental GNC gimbal, version 2: the flight computer sits on a two-axis pivot driven by two stepper motors on side brackets through color-coded linkage arms, and the whole gimbal now rides on a stepper-driven yaw turntable.",
+    image: gimbalV2Assembly,
+    alt: "CAD render of the Gimbal v2 assembly: a flight computer board between two stepper motors on teal brackets, linked by red, green and blue arms, mounted on an orange plate above a blue yaw platter and black base.",
   },
   {
-    title: "Exploded Assembly View",
+    title: "Exploded Yaw Stage",
     description:
-      "Exploded view of the gimbal showing how it goes together: the stepper motors, side brackets, linkage arms, electronics housing, flight computer board, and the fasteners that hold it all in place.",
-    image: gimballphoto1,
+      "Exploded view of the yaw turntable under the gimbal, showing how it goes together: the top platter, a large ring gear driven by a small pinion on a stepper motor, the motor's mounting bracket, the bearing, and the base housing.",
+    image: gimbalV2YawExploded,
+    alt: "Exploded CAD view of the gimbal's yaw stage: a blue platter, an orange ring gear with a red pinion, a green motor bracket, a stepper motor, a bearing ring, and a black base.",
   },
   {
     title: "Integration into the Rocket Airframe",
@@ -54,41 +54,29 @@ const fsaeProjects = [
   {
     title: "Exhaust Routing in the Chassis",
     description:
-      "Full-vehicle CAD showing the exhaust header looping off the engine and running back to the muffler through the tube-frame chassis, with clearance checked against the frame and surrounding components.",
-    image: exhaustphoto,
+      "Full-vehicle CAD showing the exhaust header looping off the engine and running back to the muffler, which mounts on brackets at the rear of the tube-frame chassis, with clearance checked against the frame and surrounding components.",
+    image: exhaustChassisRear,
+    alt: "Rear three-quarter CAD view of the Formula SAE exhaust: the header loops over the engine and runs back to the muffler on its brackets inside the tube-frame chassis.",
   },
   {
-    title: "Header, Muffler & Sensor Assembly",
+    title: "Exhaust & Engine Assembly",
     description:
-      "The complete exhaust assembly on its own: the curved header pipe, muffler, and an exhaust sensor mounted on the header with its wiring routed away from the pipe.",
-    image: exhaustphoto1,
+      "The exhaust shown with the engine and its mounts, without the frame: the curved header pipe, the muffler on its two support brackets, and the exhaust sensor on the header with its wiring routed away from the pipe.",
+    image: exhaustEngineAssembly,
+    alt: "CAD view of the exhaust header, muffler and support brackets attached to the engine and its mounts, shown without the chassis, with the sensor lead rising from the header.",
   },
   {
-    title: "Sensor Mounting Detail",
+    title: "Sensor Placement on the Header",
     description:
-      "Close-up of the threaded sensor port on the header pipe, positioned and angled so the sensor reads the exhaust flow while staying accessible for installation and service.",
-    image: exhaustphoto2,
+      "Top view inside the chassis showing where the exhaust sensor sits on the header loop, with its wiring routed up and clear of the pipe, the frame tubes, and the muffler.",
+    image: exhaustChassisTop,
+    alt: "Top-down CAD view inside the tube-frame chassis showing the exhaust sensor on the header loop above the engine, with its lead routed upward and the muffler behind.",
   },
   {
     title: "3D Scan of the Exhaust Header",
     description:
       "3D scan of the existing exhaust header and flange, used as a reference to capture the real geometry for redesigning and fitting new exhaust components.",
     image: exhaustphoto3,
-  },
-]
-
-const fsaeAiProjects = [
-  {
-    title: "O2 Sensor Port Design with AI",
-    description:
-      "I used AI alongside SolidWorks to research O2 sensor requirements and check the placement and angle of the weld bung on the header, then built and refined the model in SolidWorks.",
-    image: fsaeAiSensorPort,
-  },
-  {
-    title: "AI-Assisted Exhaust Assembly",
-    description:
-      "I paired SolidWorks with AI to plan the pipe routing, size the muffler sections, and organize the assembly, catching issues early and iterating faster before fabrication.",
-    image: fsaeAiExhaustAssembly,
   },
 ]
 
@@ -190,21 +178,15 @@ export function TechnicalSlide() {
                 </p>
                 <ul className="mt-3 flex flex-col gap-3">
                   <li>
+                    {/* Relative URL (same as the "Open the interactive model" link below) so it works under the GitHub Pages base path */}
                     <a
-                      href="#hprc-ai"
+                      href="gimbal-v2-viewer.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
                     >
                       <p className="font-medium text-ink">High Power Rocketry Club AI Integration</p>
-                      <p className="mt-1 text-sm text-grey">Designing a sample servo turntable with Claude and SolidWorks</p>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#fsae-ai"
-                      className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
-                    >
-                      <p className="font-medium text-ink">Formula SAE AI Integration</p>
-                      <p className="mt-1 text-sm text-grey">Designing exhaust parts with AI and SolidWorks</p>
+                      <p className="mt-1 text-sm text-grey">Opens the interactive 3D Gimbal v2 model in a new tab</p>
                     </a>
                   </li>
                 </ul>
@@ -223,7 +205,7 @@ export function TechnicalSlide() {
               <div key={i} className="grid items-center gap-6 md:grid-cols-2">
                 {project.image ? (
                   <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className="object-cover" />
+                    <Image src={project.image} alt={project.alt ?? project.title} fill className="object-cover" />
                   </div>
                 ) : (
                   <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
@@ -249,7 +231,7 @@ export function TechnicalSlide() {
                 src="gimbal-v2-viewer.html"
                 title="Interactive 3D model of the Gimbal v2 assembly"
                 loading="lazy"
-                className="h-[640px] w-full bg-white md:h-[720px]"
+                className="h-[640px] w-full bg-[#101317] md:h-[720px]"
               />
             </div>
             <a
@@ -289,7 +271,7 @@ export function TechnicalSlide() {
               <div key={i} className="grid items-center gap-6 md:grid-cols-2">
                 {project.image ? (
                   <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className="object-cover" />
+                    <Image src={project.image} alt={project.alt ?? project.title} fill className="object-cover" />
                   </div>
                 ) : (
                   <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
@@ -304,23 +286,6 @@ export function TechnicalSlide() {
             ))}
           </div>
 
-          {/* Formula SAE AI Integration */}
-          <div id="fsae-ai" className="mt-16 scroll-mt-32">
-            <h3 className="font-display text-2xl font-semibold text-ink">Formula SAE AI Integration</h3>
-            <div className="mt-8 flex flex-col gap-10">
-              {fsaeAiProjects.map((project, i) => (
-                <div key={i} className="grid items-center gap-6 md:grid-cols-2">
-                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-white shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className="object-contain" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
-                    <p className="mt-2 text-grey">{project.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
 
         {/* 3D Printing Workflows Section */}
