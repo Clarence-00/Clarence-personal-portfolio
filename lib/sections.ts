@@ -67,11 +67,11 @@ export const sections: SiteSection[] = [
     anchor: "hprc",
     title: "High Power Rocketry Club",
     summary:
-      "Experimental GNC hardware: a two-axis gimbal for the flight computer, driven by stepper motors and fitted into the rocket airframe.",
+      "Experimental GNC hardware: a two-axis gimbal for the flight computer, driven by stepper motors and mounted on a stepper-driven yaw turntable.",
     keywords: [
       "rocket", "rockets", "rocketry", "high power rocketry", "hprc", "gnc",
       "guidance", "navigation", "control", "gimbal", "gimball", "avionics",
-      "flight computer", "stepper", "stepper motor", "motors", "linkage", "airframe",
+      "flight computer", "stepper", "stepper motor", "motors", "linkage", "yaw", "turntable",
       "airbrakes", "exploded view", "electronics", "launch", "aerospace", "mechanism",
       "hardware",
     ],

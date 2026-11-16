@@ -4,17 +4,14 @@ import { Card, IconBadge, Slide } from "./slide"
 
 import gimbalV2Assembly from "@/public/images/Technical/gimbal-v2-assembly.png"
 import gimbalV2YawExploded from "@/public/images/Technical/gimbal-v2-yaw-exploded.png"
-import gimballphoto2 from "@/public/images/Technical/gimball-photo2.png"
 
 import exhaustChassisRear from "@/public/images/Technical/exhaust-chassis-rear.png"
 import exhaustEngineAssembly from "@/public/images/Technical/exhaust-engine-assembly.png"
-import exhaustChassisTop from "@/public/images/Technical/exhaust-chassis-top.png"
 import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 
 import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
 import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
 import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
-import hprcAiTurntable from "@/public/images/Technical/hprc-ai-turntable.png"
 
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
@@ -35,12 +32,6 @@ const hprcProjects = [
       "Exploded view of the yaw turntable under the gimbal, showing how it goes together: the top platter, a large ring gear driven by a small pinion on a stepper motor, the motor's mounting bracket, the bearing, and the base housing.",
     image: gimbalV2YawExploded,
     alt: "Exploded CAD view of the gimbal's yaw stage: a blue platter, an orange ring gear with a red pinion, a green motor bracket, a stepper motor, a bearing ring, and a black base.",
-  },
-  {
-    title: "Integration into the Rocket Airframe",
-    description:
-      "The gimbal assembly positioned above its mounting plate and a section of the rocket airframe, checking fit and alignment before integrating the hardware into the vehicle.",
-    image: gimballphoto2,
   },
 ]
 
@@ -66,26 +57,10 @@ const fsaeProjects = [
     alt: "CAD view of the exhaust header, muffler and support brackets attached to the engine and its mounts, shown without the chassis, with the sensor lead rising from the header.",
   },
   {
-    title: "Sensor Placement on the Header",
-    description:
-      "Top view inside the chassis showing where the exhaust sensor sits on the header loop, with its wiring routed up and clear of the pipe, the frame tubes, and the muffler.",
-    image: exhaustChassisTop,
-    alt: "Top-down CAD view inside the tube-frame chassis showing the exhaust sensor on the header loop above the engine, with its lead routed upward and the muffler behind.",
-  },
-  {
     title: "3D Scan of the Exhaust Header",
     description:
       "3D scan of the existing exhaust header and flange, used as a reference to capture the real geometry for redesigning and fitting new exhaust components.",
     image: exhaustphoto3,
-  },
-]
-
-const hprcAiProjects = [
-  {
-    title: "Sample Turntable Designed with Claude",
-    description:
-      "I worked with Claude to design a sample servo-driven turntable in SolidWorks: a base that holds the servo, a slot for the wire, and a platter that seats on the servo horn. It showed me how AI can quickly turn an idea into CAD for mechanisms like the airbrakes and gimbal.",
-    image: hprcAiTurntable,
   },
 ]
 
@@ -242,24 +217,6 @@ export function TechnicalSlide() {
             >
               Open the interactive model in its own tab
             </a>
-          </div>
-
-          {/* High Power Rocketry Club AI Integration */}
-          <div id="hprc-ai" className="mt-16 scroll-mt-32">
-            <h3 className="font-display text-2xl font-semibold text-ink">High Power Rocketry Club AI Integration</h3>
-            <div className="mt-8 flex flex-col gap-10">
-              {hprcAiProjects.map((project, i) => (
-                <div key={i} className="grid items-center gap-6 md:grid-cols-2">
-                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-white shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className="object-contain" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
-                    <p className="mt-2 text-grey">{project.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
 
