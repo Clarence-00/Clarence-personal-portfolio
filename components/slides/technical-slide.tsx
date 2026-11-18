@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image, { type StaticImageData } from "next/image"
 import { Layers, Sparkles, Wrench } from "lucide-react"
 import { Card, IconBadge, Slide } from "./slide"
 
@@ -12,6 +12,13 @@ import exhaustphoto3 from "@/public/images/Technical/exhaust-photo3.png"
 import phoneStandPhoto from "@/public/images/Technical/phone-stand.jpg"
 import qrCodePhoto from "@/public/images/Technical/qr-code.jpg"
 import fsaeTeamPhoto from "@/public/images/Technical/fsae-car.jpg"
+
+import scan2cadScanViews from "@/public/images/Technical/scan2cad-scan-views.webp"
+import scan2cadPlaneCheck from "@/public/images/Technical/scan2cad-plane-check.webp"
+import scan2cadCenterline from "@/public/images/Technical/scan2cad-centerline.webp"
+import scan2cadFlangeOutline from "@/public/images/Technical/scan2cad-flange-outline.webp"
+import scan2cadSplineFit from "@/public/images/Technical/scan2cad-spline-fit.webp"
+import scan2cadDeviationMap from "@/public/images/Technical/scan2cad-deviation-map.webp"
 
 const teams = [
   { id: "hprc", name: "High Power Rocketry Club", detail: "Experimental GNC Hardware / Rocket Mechanisms and Avionics" },
@@ -63,6 +70,89 @@ const fsaeProjects = [
     image: exhaustphoto3,
   },
 ]
+
+// ---------- AI Integration: Scan-to-CAD exhaust header ----------
+type FigureImage = { src: StaticImageData; alt: string; cover?: boolean }
+
+const scanToCadTags = ["3D Scanning", "SolidWorks", "Python", "Claude + MCP", "FSAE"]
+
+const scanToCadSteps = [
+  "I set the scope: only the pipe and flange, leaving out the heat shield, with all units in mm. My caliper measurements set the scale and checked the results.",
+  "Claude analyzed the 1.7-million-triangle scan with Python. It traced the pipe's true centerline by slicing it every 2 mm and found that the whole bend lies in one plane (within 0.7 mm).",
+  "It traced the flange outline and bolt holes from the scan. The bore came out at 37.3 mm, confirming my 37.4 mm measurement. It also found that the bolt holes are unevenly spaced, which I flagged to check against the engine.",
+  "Claude then built the part directly in SolidWorks with a real feature tree: a spline sweep along the scanned centerline, a 0.75 mm shell, revolves for the outlet collar, and an extruded flange with bolt holes.",
+]
+
+const scanToCadRows: { images: FigureImage[]; caption: string }[] = [
+  {
+    images: [
+      {
+        src: exhaustphoto3,
+        cover: true,
+        alt: "Grey 3D scan render of the FSAE exhaust header: a looping pipe with the 3-bolt flange at one end, shown on a dark background.",
+      },
+      {
+        src: scan2cadScanViews,
+        alt: "Three orthographic views (top, front and side) of the scanned header's point cloud in black, with a second surface along part of the bend highlighted in red.",
+      },
+    ],
+    caption: "The 3D scan of the header, shown as a render and as the raw point cloud.",
+  },
+  {
+    images: [
+      {
+        src: scan2cadCenterline,
+        alt: "Front-plane plot of the scanned pipe in grey with the extracted centerline drawn in red along the full bend, beside a plot of the flange's engine face.",
+      },
+      {
+        src: scan2cadFlangeOutline,
+        alt: "Flange cross-section in black on a millimeter grid, with its traced outline, central bore and three bolt holes outlined in red.",
+      },
+    ],
+    caption: "Extracting the centerline and flange geometry from the scan.",
+  },
+  {
+    images: [
+      {
+        src: scan2cadPlaneCheck,
+        alt: "The scan projected into the plane of the bend, colored by distance from that plane, next to an edge-on view showing the pipe stays flat in one plane.",
+      },
+      {
+        src: scan2cadSplineFit,
+        alt: "Spline fits used to build the model: red control points along the pipe centerline with the outlet collar profile in green, and a red spline traced around the flange outline.",
+      },
+    ],
+    caption: "Checking that the bend is planar, then fitting the splines that drive the SolidWorks sweep and flange.",
+  },
+]
+
+function ScanToCadFigure({ images, caption }: { images: FigureImage[]; caption: string }) {
+  return (
+    <figure>
+      <div className={`grid items-center gap-6 ${images.length > 1 ? "md:grid-cols-2" : ""}`}>
+        {images.map((img) =>
+          images.length > 1 ? (
+            // Pairs share a 4:3 frame (like the other project images) so they line up side by side
+            <div key={img.src.src} className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className={img.cover ? "object-cover" : "object-contain p-3"}
+              />
+            </div>
+          ) : (
+            <div key={img.src.src} className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+              <Image src={img.src} alt={img.alt} className="h-auto w-full" />
+            </div>
+          ),
+        )}
+      </div>
+      <figcaption className="mt-3 text-sm text-grey">{caption}</figcaption>
+    </figure>
+  )
+}
 
 const printingProjects = [
   {
@@ -162,6 +252,15 @@ export function TechnicalSlide() {
                     >
                       <p className="font-medium text-ink">High Power Rocketry Club AI Integration</p>
                       <p className="mt-1 text-sm text-grey">Opens the interactive 3D Gimbal v2 model in a new tab</p>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#scan-to-cad"
+                      className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
+                    >
+                      <p className="font-medium text-ink">Scan-to-CAD: FSAE Exhaust Header</p>
+                      <p className="mt-1 text-sm text-grey">Turning a 3D scan into an editable SolidWorks model with Claude</p>
                     </a>
                   </li>
                 </ul>
@@ -267,6 +366,69 @@ export function TechnicalSlide() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* AI Integration Section */}
+        <section id="ai-integration" className="scroll-mt-32">
+          <h2 className="font-display text-3xl font-semibold text-ink">AI Integration</h2>
+
+          <article id="scan-to-cad" className="mt-8 flex scroll-mt-32 flex-col gap-10">
+            <div className="max-w-3xl">
+              <h3 className="font-display text-xl font-semibold text-ink">
+                Scan-to-CAD: AI-Assisted Design of an FSAE Exhaust Header
+              </h3>
+              <ul className="mt-3 flex flex-wrap gap-2" aria-label="Tools and topics">
+                {scanToCadTags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-border bg-beige-cream px-3 py-1 text-sm text-ink"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-grey">
+                Our FSAE team&apos;s custom exhaust header has an irregular bend with no constant radius and an uneven
+                3-bolt flange, so it couldn&apos;t be drawn accurately with simple lines and arcs. I 3D-scanned the real
+                pipe, took caliper measurements (38.9 mm OD, 37.4 mm ID), and used Claude, connected directly to
+                SolidWorks on my laptop, to turn the scan into a clean, editable CAD model my team can use in assemblies.
+              </p>
+            </div>
+
+            <ScanToCadFigure {...scanToCadRows[0]} />
+
+            <div className="max-w-3xl">
+              <h4 className="font-display text-lg font-semibold text-ink">How I used AI</h4>
+              <ul className="mt-3 flex list-disc flex-col gap-2 pl-5 text-grey marker:text-ink/40">
+                {scanToCadSteps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ul>
+            </div>
+
+            <ScanToCadFigure {...scanToCadRows[1]} />
+            <ScanToCadFigure {...scanToCadRows[2]} />
+
+            <div>
+              <h4 className="font-display text-lg font-semibold text-ink">Result</h4>
+              <div className="mt-3">
+                <ScanToCadFigure
+                  images={[
+                    {
+                      src: scan2cadDeviationMap,
+                      alt: "Deviation map of the scan against the finished model in front and side views, colored from blue (0 mm) to red (3 mm); most of the pipe and flange are blue to green.",
+                    },
+                  ]}
+                  caption="Scan vs. model: median error 0.36 mm, with 95% of the scan within 2 mm."
+                />
+              </div>
+            </div>
+
+            <p className="max-w-3xl font-medium text-ink">
+              AI handled the tedious geometry extraction and modeling. I made the design decisions and checked every
+              number against real measurements.
+            </p>
+          </article>
         </section>
       </div>
     </Slide>

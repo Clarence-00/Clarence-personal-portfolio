@@ -104,6 +104,20 @@ export const sections: SiteSection[] = [
     ],
   },
   {
+    id: "scan-to-cad",
+    page: "/technical",
+    anchor: "scan-to-cad",
+    title: "Scan-to-CAD: AI-Assisted FSAE Exhaust Header",
+    summary:
+      "Turning a 3D scan of the exhaust header into an editable SolidWorks model with Claude, checked against caliper measurements.",
+    keywords: [
+      "ai", "artificial intelligence", "claude", "mcp", "llm", "ai integration",
+      "scan to cad", "3d scan", "scan", "scanning", "reverse engineering", "point cloud",
+      "python", "solidworks", "cad", "exhaust", "header", "flange", "centerline",
+      "spline", "sweep", "deviation", "fsae", "formula sae",
+    ],
+  },
+  {
     id: "fsae",
     page: "/technical",
     anchor: "fsae",
