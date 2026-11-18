@@ -259,7 +259,7 @@ export function TechnicalSlide() {
                       href="#scan-to-cad"
                       className="block h-full rounded-xl border border-border bg-beige/60 p-4 transition-colors hover:border-ink hover:bg-beige focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong"
                     >
-                      <p className="font-medium text-ink">Scan-to-CAD: FSAE Exhaust Header</p>
+                      <p className="font-medium text-ink">FSAE AI Integration</p>
                       <p className="mt-1 text-sm text-grey">Turning a 3D scan into an editable SolidWorks model with Claude</p>
                     </a>
                   </li>
