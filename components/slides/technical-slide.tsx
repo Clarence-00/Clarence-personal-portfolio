@@ -342,37 +342,8 @@ export function TechnicalSlide() {
             ))}
           </div>
 
-        </section>
-
-        {/* 3D Printing Workflows Section */}
-        <section id="3d-printing" className="scroll-mt-32">
-          <h2 className="font-display text-3xl font-semibold text-ink">3D Printing Workflows</h2>
-          <div className="mt-8 flex flex-col gap-10">
-            {printingProjects.map((project, i) => (
-              <div key={i} className="grid items-center gap-6 md:grid-cols-2">
-                {project.image ? (
-                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
-                    <Image src={project.image} alt={project.title} fill className="object-cover" />
-                  </div>
-                ) : (
-                  <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
-                    Image placeholder {i + 1}
-                  </div>
-                )}
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
-                  <p className="mt-2 text-grey">{project.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* AI Integration Section */}
-        <section id="ai-integration" className="scroll-mt-32">
-          <h2 className="font-display text-3xl font-semibold text-ink">AI Integration</h2>
-
-          <article id="scan-to-cad" className="mt-8 flex scroll-mt-32 flex-col gap-10">
+          {/* FSAE AI Integration: Scan-to-CAD exhaust header */}
+          <article id="scan-to-cad" className="mt-16 flex scroll-mt-32 flex-col gap-10">
             <div className="max-w-3xl">
               <h3 className="font-display text-xl font-semibold text-ink">
                 Scan-to-CAD: AI-Assisted Design of an FSAE Exhaust Header
@@ -429,6 +400,30 @@ export function TechnicalSlide() {
               number against real measurements.
             </p>
           </article>
+        </section>
+
+        {/* 3D Printing Workflows Section */}
+        <section id="3d-printing" className="scroll-mt-32">
+          <h2 className="font-display text-3xl font-semibold text-ink">3D Printing Workflows</h2>
+          <div className="mt-8 flex flex-col gap-10">
+            {printingProjects.map((project, i) => (
+              <div key={i} className="grid items-center gap-6 md:grid-cols-2">
+                {project.image ? (
+                  <div className={`relative aspect-[4/3] overflow-hidden rounded-2xl border border-border shadow-sm ${i % 2 ? "md:order-2" : ""}`}>
+                    <Image src={project.image} alt={project.title} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className={`flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-ink/25 bg-beige-cream text-sm text-grey ${i % 2 ? "md:order-2" : ""}`}>
+                    Image placeholder {i + 1}
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-ink">{project.title}</h3>
+                  <p className="mt-2 text-grey">{project.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     </Slide>
